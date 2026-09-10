@@ -1,0 +1,2533 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voxel Academy — Legend Edition</title>
+<meta name="theme-color" content="#7c3aed">
+<style>
+  :root{--primary:#7c3aed;--primary-dark:#5b21b6;--accent:#06b6d4;--gold:#fbbf24;--gold-dark:#d97706;--success:#10b981;--danger:#ef4444;--bg:#0f0e1a;--bg2:#1a1830;--surface:#221f3a;--surface-2:#2d2a4a;--border:#3a3560;--text:#f1f0ff;--text-muted:#a5a0c9;--common:#94a3b8;--rare:#3b82f6;--epic:#a855f7;--legendary:#f59e0b;--mythic:#ef4444}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:radial-gradient(ellipse at top,#1e1b3a 0%,#0f0e1a 60%);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.5}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input,textarea,select{font-family:inherit}
+  @keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,.5)}50%{box-shadow:0 0 0 12px rgba(251,191,36,0)}}
+  @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-100px) scale(1.3)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px) rotate(-3deg)}75%{transform:translateX(8px) rotate(3deg)}}
+  @keyframes confettiFall{0%{transform:translateY(-100vh) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+  @keyframes toastIn{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}
+  @keyframes toastOut{from{transform:translateX(0);opacity:1}to{transform:translateX(400px);opacity:0}}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  @keyframes raysRotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  @keyframes popIn{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+  @keyframes glowPulse{0%,100%{filter:drop-shadow(0 0 8px currentColor)}50%{filter:drop-shadow(0 0 20px currentColor)}}
+  @keyframes flameFlicker{0%,100%{transform:scale(1)}50%{transform:scale(1.15) rotate(5deg)}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes vsPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+  @keyframes glowRainbow{0%{filter:hue-rotate(0)}100%{filter:hue-rotate(360deg)}}
+  @keyframes tournamentPulse{0%,100%{box-shadow:0 0 20px rgba(239,68,68,.5)}50%{box-shadow:0 0 40px rgba(239,68,68,.9)}}
+  @keyframes liveBlink{0%,100%{opacity:1}50%{opacity:.4}}
+  @keyframes divisionGlow{0%,100%{box-shadow:0 0 15px currentColor}50%{box-shadow:0 0 35px currentColor}}
+  @keyframes starsTwinkle{0%,100%{opacity:.5}50%{opacity:.9}}
+  @keyframes charFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  @keyframes charBreath{0%,100%{transform:rotateX(0deg) scale(1)}50%{transform:rotateX(1.5deg) scale(1.01)}}
+  @keyframes shadowPulse{0%,100%{transform:translateX(-50%) scale(1);opacity:.65}50%{transform:translateX(-50%) scale(.88);opacity:.4}}
+  @keyframes auraSpin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+  @keyframes headTilt{0%,100%{transform:translateX(-50%) rotateY(0deg)}25%{transform:translateX(-50%) rotateY(3deg)}75%{transform:translateX(-50%) rotateY(-3deg)}}
+  @keyframes armSwing{0%,100%{transform:rotate(0deg)}50%{transform:rotate(6deg)}}
+  @keyframes elbowIdle{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-4deg)}}
+  @keyframes kneeIdle{0%,100%{transform:rotate(0deg)}50%{transform:rotate(2deg)}}
+  @keyframes hatBob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-4px)}}
+  @keyframes petBob{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(6deg)}}
+  @keyframes platformPulse{0%,100%{opacity:.7;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.05)}}
+  @keyframes hintPulse{0%,100%{opacity:.7}50%{opacity:1}}
+  @keyframes waveUpper{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-110deg)}}
+  @keyframes waveLower{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-25deg)}}
+  @keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-30px)}60%{transform:translateY(0)}}
+  @keyframes danceAnim{0%,100%{transform:rotateZ(-5deg)}50%{transform:rotateZ(5deg)}}
+  @keyframes danceElbow{0%,100%{transform:rotate(-25deg)}50%{transform:rotate(-75deg)}}
+  @keyframes danceKnee{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-15deg)}}
+  @keyframes laughShake{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+  @keyframes flexUp{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-140deg)}}
+  @keyframes flexElbow{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-110deg)}}
+  @keyframes armsUp{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-160deg)}}
+  @keyframes armsUpElbow{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-15deg)}}
+  @keyframes sixSevenSway{0%,100%{transform:rotate(35deg)}50%{transform:rotate(-35deg)}}
+  @keyframes sixSevenElbow{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(20deg)}}
+  @keyframes emoteFloatUp{0%{opacity:0;transform:translateX(-50%) translateY(20px) scale(.5)}20%{opacity:1;transform:translateX(-50%) translateY(0) scale(1.3)}80%{opacity:1;transform:translateX(-50%) translateY(-30px) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(-80px) scale(1)}}
+  @keyframes wheelIn{from{transform:scale(.5) rotate(-90deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+  .topbar{position:sticky;top:0;z-index:100;background:rgba(15,14,26,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:8px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .brand{font-size:17px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,#a78bfa,#06b6d4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:flex;align-items:center;gap:7px;cursor:pointer}
+  .brand-icon{width:26px;height:26px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 20px rgba(124,58,237,.6)}
+  .nav-main{display:flex;gap:2px;flex-wrap:wrap}
+  .nav-main button{padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;color:var(--text-muted);transition:.15s}
+  .nav-main button:hover{background:var(--surface);color:var(--text)}
+  .nav-main button.active{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;box-shadow:0 0 20px rgba(124,58,237,.5)}
+  .spacer{flex:1}
+  .streak{display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,#7f1d1d,#b91c1c);padding:4px 10px;border-radius:999px;font-weight:800;font-size:12px;border:1px solid #ef4444}
+  .streak .flame{font-size:14px;animation:flameFlicker .6s infinite}
+  .wallet{display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,#422006,#78350f);border:1px solid var(--gold-dark);padding:4px 11px 4px 4px;border-radius:999px;font-weight:800;cursor:pointer;font-size:12px}
+  .coin-icon{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fef3c7,#fbbf24 40%,#d97706 90%);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#78350f;box-shadow:inset -2px -2px 4px rgba(0,0,0,.3),0 0 12px rgba(251,191,36,.6);animation:glowPulse 3s infinite}
+  .level-badge{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);padding:3px 10px 3px 3px;border-radius:999px}
+  .xp-ring{position:relative;width:30px;height:30px}
+  .xp-ring svg{transform:rotate(-90deg)}
+  .xp-ring .lvl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff}
+  .xp-info{display:flex;flex-direction:column;font-size:9px;line-height:1.2}
+  .xp-info .label{color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+  .xp-info .value{font-weight:800;font-size:10px}
+  .user-avatar-mini{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid var(--gold);cursor:pointer}
+  .icon-btn{width:34px;height:34px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;transition:.15s}
+  .icon-btn:hover{background:var(--surface-2);border-color:var(--primary)}
+  .icon-btn.active{background:linear-gradient(135deg,var(--primary),var(--accent));border-color:var(--gold)}
+  .page{display:none}
+  .page.active{display:block;animation:fadeIn .3s}
+  .container{max-width:1500px;margin:0 auto;padding:20px}
+  .layout{display:grid;grid-template-columns:340px 1fr 360px;gap:16px;max-width:1500px;margin:20px auto;padding:0 20px}
+  .card{background:linear-gradient(180deg,rgba(34,31,58,.75),rgba(26,24,48,.75));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
+  .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+  .section-title{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);font-weight:800;margin:14px 0 9px;display:flex;align-items:center;gap:7px}
+  .section-title::before{content:'';width:4px;height:13px;background:linear-gradient(180deg,var(--gold),var(--primary));border-radius:2px}
+  .slot-tabs{display:flex;gap:5px;margin-bottom:10px;overflow-x:auto;padding-bottom:3px}
+  .slot-tab{padding:6px 11px;border-radius:9px;background:rgba(45,42,74,.7);font-size:11px;font-weight:700;white-space:nowrap;border:1px solid transparent}
+  .slot-tab.active{background:linear-gradient(135deg,var(--primary),var(--accent));border-color:var(--gold)}
+  .items-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .skin-item{aspect-ratio:1;background:rgba(45,42,74,.7);border:2px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;position:relative;transition:.15s}
+  .skin-item.owned{border-color:var(--success)}
+  .skin-item.equipped{border-color:var(--gold);box-shadow:0 0 20px var(--gold)}
+  .skin-item.locked{opacity:.55}
+  .skin-item.r-common{border-color:var(--common)}
+  .skin-item.r-rare{border-color:var(--rare)}
+  .skin-item.r-epic{border-color:var(--epic)}
+  .skin-item.r-legendary{border-color:var(--legendary)}
+  .skin-item.r-mythic{border-color:var(--mythic);animation:glowRainbow 3s infinite}
+  .skin-item .price-tag{position:absolute;bottom:2px;right:2px;font-size:9px;background:var(--gold-dark);color:#fff;padding:1px 5px;border-radius:6px;font-weight:800}
+  .skin-item .equip-mark{position:absolute;top:2px;right:2px;color:var(--gold);font-size:13px}
+  .skin-item .dup-badge{position:absolute;top:2px;left:2px;background:var(--accent);color:#fff;font-size:9px;font-weight:900;padding:1px 5px;border-radius:6px}
+  .streak-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+  .day-cell{aspect-ratio:1;background:rgba(45,42,74,.7);border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid var(--border);color:var(--text-muted)}
+  .day-cell.claimed{background:linear-gradient(135deg,#065f46,#10b981);border-color:var(--success);color:#fff}
+  .day-cell.today{background:linear-gradient(135deg,#7c3aed,#06b6d4);border-color:var(--gold);color:#fff;animation:pulseGlow 2s infinite}
+  .day-cell .day-icon{font-size:15px;margin-bottom:2px}
+  .day-cell .reward{font-size:9px;opacity:.9}
+  .wheel-container{position:relative;width:240px;height:240px;margin:0 auto}
+  .wheel-pointer{position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:22px solid var(--gold);z-index:10;filter:drop-shadow(0 0 8px var(--gold))}
+  .wheel{width:100%;height:100%;border-radius:50%;border:6px solid var(--gold);position:relative;transition:transform 5s cubic-bezier(.17,.67,.12,.99);box-shadow:0 0 40px rgba(251,191,36,.4),inset 0 0 40px rgba(0,0,0,.5)}
+  .wheel .seg{position:absolute;top:50%;left:50%;transform-origin:0 0;font-size:12px;white-space:nowrap;font-weight:800;text-shadow:0 0 6px rgba(0,0,0,.9)}
+  .wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;background:radial-gradient(circle at 35% 30%,#fef3c7,#fbbf24 50%,#d97706);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:5;border:3px solid var(--gold-dark);box-shadow:0 0 30px rgba(251,191,36,.8)}
+  .chest-wrap{display:flex;flex-direction:column;align-items:center;padding:14px 0}
+  .chest{font-size:80px;cursor:pointer;transition:.2s;filter:drop-shadow(0 0 20px rgba(251,191,36,.5))}
+  .chest.opening{animation:shake .4s infinite}
+  .quest{background:rgba(45,42,74,.7);border-radius:11px;padding:11px 13px;margin-bottom:9px;border-left:4px solid var(--primary)}
+  .quest.done{border-left-color:var(--success);opacity:.7}
+  .quest.ai{border-left-color:var(--accent)}
+  .quest.clan{border-left-color:var(--gold)}
+  .quest h4{font-size:12px;margin-bottom:5px;display:flex;justify-content:space-between;gap:8px}
+  .quest .reward{color:var(--gold);font-weight:800;font-size:11px;white-space:nowrap}
+  .quest .bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:5px}
+  .quest .bar>div{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .6s}
+  .ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .ach{aspect-ratio:1;background:rgba(45,42,74,.7);border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:9px;padding:3px;border:2px solid var(--border);cursor:pointer;transition:.15s}
+  .ach .ach-icon{font-size:22px;margin-bottom:1px}
+  .ach.unlocked{background:linear-gradient(135deg,#422006,#78350f);border-color:var(--gold);box-shadow:0 0 15px rgba(251,191,36,.3)}
+  .ach.locked{opacity:.4;filter:grayscale(1)}
+  .shop-item{display:flex;align-items:center;gap:11px;background:rgba(45,42,74,.7);border-radius:11px;padding:9px 11px;margin-bottom:7px;border:1px solid var(--border)}
+  .shop-icon{font-size:28px}
+  .shop-info{flex:1}
+  .shop-info .name{font-size:12px;font-weight:700}
+  .shop-info .slot{font-size:10px;color:var(--text-muted);text-transform:uppercase}
+  .buy-btn{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#422006;padding:6px 11px;border-radius:8px;font-weight:800;font-size:11px;transition:.15s}
+  .buy-btn.owned{background:var(--surface);color:var(--text-muted)}
+  .buy-btn.equipped{background:linear-gradient(135deg,var(--success),#047857);color:#fff}
+  .lb-row{display:flex;align-items:center;gap:9px;padding:7px 11px;border-radius:9px;margin-bottom:3px;background:rgba(45,42,74,.7);font-size:12px}
+  .lb-row.me{background:linear-gradient(90deg,rgba(124,58,237,.3),rgba(6,182,212,.2));border:1px solid var(--primary)}
+  .lb-rank{width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900;font-size:11px;background:var(--surface)}
+  .lb-rank.gold{background:linear-gradient(135deg,#fef3c7,#fbbf24);color:#422006}
+  .lb-rank.silver{background:linear-gradient(135deg,#f1f5f9,#94a3b8);color:#1e293b}
+  .lb-rank.bronze{background:linear-gradient(135deg,#fed7aa,#c2410c);color:#fff}
+  .lb-name{flex:1}
+  .lb-coins{color:var(--gold);font-weight:800;font-size:11px}
+  .btn{padding:11px 18px;border-radius:11px;font-weight:800;font-size:13px;transition:.15s;display:inline-flex;align-items:center;justify-content:center;gap:7px;letter-spacing:.3px}
+  .btn-primary{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;box-shadow:0 0 25px rgba(124,58,237,.5)}
+  .btn-primary:hover:not(:disabled){transform:translateY(-2px)}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#422006;box-shadow:0 0 25px rgba(251,191,36,.5)}
+  .btn-gold:hover:not(:disabled){transform:translateY(-2px)}
+  .btn-danger{background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff}
+  .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+  .btn-outline:hover{background:var(--surface);border-color:var(--primary)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn-full{width:100%}
+  .btn-sm{padding:7px 13px;font-size:12px}
+  .toasts{position:fixed;top:80px;right:20px;display:flex;flex-direction:column;gap:10px;z-index:1000;pointer-events:none}
+  .toast{background:linear-gradient(135deg,rgba(34,31,58,.9),rgba(45,42,74,.9));backdrop-filter:blur(12px);border:1px solid var(--gold);border-radius:14px;padding:11px 17px;display:flex;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:toastIn .4s;min-width:250px;pointer-events:auto;max-width:340px}
+  .toast.out{animation:toastOut .4s forwards}
+  .toast-icon{font-size:24px}
+  .toast-title{font-size:12px;font-weight:800}
+  .toast-desc{font-size:11px;color:var(--text-muted)}
+  .float-reward{position:fixed;font-size:22px;font-weight:900;color:var(--gold);text-shadow:0 0 20px var(--gold);pointer-events:none;z-index:2000;animation:floatUp 1.5s ease-out forwards}
+  .confetti{position:fixed;top:0;left:0;width:12px;height:12px;z-index:3000;pointer-events:none}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:500;padding:20px}
+  .modal-bg.show{display:flex}
+  .modal-box{background:linear-gradient(180deg,var(--surface),var(--bg2));border:2px solid var(--gold);border-radius:24px;padding:32px;max-width:600px;width:100%;text-align:center;position:relative;animation:popIn .5s;box-shadow:0 0 80px rgba(251,191,36,.5);overflow:hidden;max-height:90vh;overflow-y:auto}
+  .modal-box::before{content:'';position:absolute;top:50%;left:50%;width:600px;height:600px;background:conic-gradient(from 0deg,transparent 0deg,rgba(251,191,36,.15) 20deg,transparent 40deg,transparent 60deg,rgba(251,191,36,.15) 80deg,transparent 100deg);transform:translate(-50%,-50%);animation:raysRotate 12s linear infinite;pointer-events:none;z-index:0}
+  .modal-box>*{position:relative;z-index:1}
+  .modal-box h2{font-size:26px;font-weight:900;margin-bottom:8px;background:linear-gradient(135deg,var(--gold),#fef3c7,var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .modal-box .big-icon{font-size:80px;margin:10px 0;animation:bounce 1.5s infinite}
+  .modal-box p{color:var(--text-muted);margin-bottom:18px}
+  .modal-box .reward-show{font-size:24px;font-weight:900;color:var(--gold);margin:14px 0;text-shadow:0 0 20px var(--gold)}
+  .modal-box input,.modal-box textarea,.modal-box select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none;font-size:13px;margin-bottom:10px;text-align:left}
+  .modal-box label{display:block;text-align:left;font-size:12px;color:var(--text-muted);margin-bottom:4px;font-weight:700}
+  .catalog-hero{background:linear-gradient(135deg,#4c1d95,#7c3aed,#06b6d4);border-radius:22px;padding:36px;margin-bottom:22px;position:relative;overflow:hidden}
+  .catalog-hero h1{font-size:30px;font-weight:900;margin-bottom:10px;letter-spacing:-1px}
+  .catalog-hero p{opacity:.9;max-width:600px;margin-bottom:16px}
+  .filter-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px}
+  .chip{padding:7px 15px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:12px;font-weight:700;color:var(--text-muted)}
+  .chip.active{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-color:transparent}
+  .course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+  .course-card{background:linear-gradient(180deg,rgba(34,31,58,.85),rgba(26,24,48,.85));backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:.2s;display:flex;flex-direction:column}
+  .course-card:hover{transform:translateY(-4px);border-color:var(--primary);box-shadow:0 15px 40px rgba(124,58,237,.3)}
+  .course-cover{height:140px;position:relative;display:flex;align-items:center;justify-content:center;font-size:56px}
+  .course-cover .badge-ai,.course-cover .badge-done,.course-cover .badge-streak{position:absolute;top:10px;background:rgba(0,0,0,.6);color:#fff;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:800}
+  .course-cover .badge-ai{right:10px}
+  .course-cover .badge-done{left:10px;background:rgba(16,185,129,.9)}
+  .course-cover .badge-streak{right:10px;top:42px;background:linear-gradient(135deg,#7f1d1d,#b91c1c)}
+  .course-body{padding:14px;flex:1;display:flex;flex-direction:column}
+  .course-body h3{font-size:15px;font-weight:800;margin-bottom:5px;line-height:1.3}
+  .course-body .desc{color:var(--text-muted);font-size:12px;margin-bottom:12px;flex:1}
+  .course-meta{display:flex;gap:10px;font-size:11px;color:var(--text-muted);margin-bottom:10px;flex-wrap:wrap}
+  .course-progress-bar{height:4px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:7px}
+  .course-progress-bar>div{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:3px}
+  .course-footer{display:flex;justify-content:space-between;align-items:center;padding-top:9px;border-top:1px solid var(--border);font-size:11px}
+  .stars{color:var(--gold);font-weight:800}
+  .price{font-weight:800;color:var(--gold)}
+  .price.free{color:var(--success)}
+  .course-hero{background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:20px;padding:32px;margin-bottom:18px;display:grid;grid-template-columns:1fr 290px;gap:28px;border:1px solid var(--border)}
+  .course-hero h1{font-size:26px;font-weight:900;margin-bottom:10px}
+  .course-hero .lead{opacity:.85;margin-bottom:18px}
+  .course-hero .meta-row{display:flex;gap:14px;font-size:12px;opacity:.85;flex-wrap:wrap}
+  .enroll-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:18px}
+  .enroll-cover{width:100%;height:120px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:52px;margin-bottom:14px}
+  .module{background:var(--surface);border:1px solid var(--border);border-radius:11px;margin-bottom:8px}
+  .module-header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:700;font-size:13px}
+  .module-header:hover{background:var(--surface-2)}
+  .type-tag{font-size:10px;padding:2px 8px;border-radius:6px;background:rgba(124,58,237,.2);color:#c4b5fd;font-weight:800;text-transform:uppercase}
+  .type-tag.video{background:rgba(239,68,68,.2);color:#fca5a5}
+  .type-tag.quiz{background:rgba(245,158,11,.2);color:#fcd34d}
+  .type-tag.code{background:rgba(6,182,212,.2);color:#67e8f9}
+  .learn-layout{display:grid;grid-template-columns:260px 1fr 300px;gap:14px;padding:20px;max-width:1500px;margin:0 auto}
+  .learn-sidebar{background:var(--surface);border-radius:16px;padding:14px;border:1px solid var(--border);height:fit-content;position:sticky;top:74px;max-height:calc(100vh - 90px);overflow-y:auto}
+  .learn-sidebar h4{font-size:11px;text-transform:uppercase;color:var(--text-muted);margin-bottom:9px}
+  .progress-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin:7px 0 14px}
+  .progress-bar>div{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .4s}
+  .lesson-list-item{padding:9px 11px;border-radius:8px;font-size:12px;cursor:pointer;margin-bottom:3px;display:flex;align-items:center;gap:7px;color:var(--text-muted)}
+  .lesson-list-item:hover{background:var(--surface-2);color:var(--text)}
+  .lesson-list-item.current{background:linear-gradient(135deg,rgba(124,58,237,.3),rgba(6,182,212,.2));color:var(--text);font-weight:700}
+  .lesson-list-item.done{color:var(--success)}
+  .learn-main{background:var(--surface);border-radius:16px;padding:26px;border:1px solid var(--border)}
+  .learn-main h2{font-size:21px;font-weight:800;margin-bottom:14px}
+  .learn-main .content{font-size:14px;line-height:1.75;color:#d4d0f0}
+  .learn-main .content p{margin-bottom:12px}
+  .learn-main .content code{background:var(--bg);padding:2px 6px;border-radius:4px;font-family:monospace;font-size:12px;color:#c4b5fd}
+  .video-mock{background:linear-gradient(135deg,#1e1b4b,#0f172a);border-radius:12px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:#fff;font-size:56px;margin-bottom:18px;position:relative;border:1px solid var(--border)}
+  .quiz-block{background:var(--surface-2);border-radius:11px;padding:16px;margin:14px 0}
+  .quiz-block h4{font-size:14px;margin-bottom:12px}
+  .quiz-option{display:flex;align-items:center;gap:9px;padding:11px 14px;background:var(--surface);border:2px solid var(--border);border-radius:9px;margin-bottom:7px;cursor:pointer;transition:.15s;font-size:13px}
+  .quiz-option:hover{border-color:var(--primary)}
+  .quiz-option.correct{border-color:var(--success);background:rgba(16,185,129,.15)}
+  .quiz-option.wrong{border-color:var(--danger);background:rgba(239,68,68,.15)}
+  .code-area{background:#0f0e1a;color:#e2e8f0;font-family:monospace;font-size:12px;padding:14px;border-radius:10px;min-height:140px;margin:11px 0;border:1px solid var(--border);width:100%;resize:vertical;outline:none}
+  .learn-footer{display:flex;justify-content:space-between;align-items:center;margin-top:22px;padding-top:16px;border-top:1px solid var(--border);gap:10px;flex-wrap:wrap}
+  .code-runner{margin:12px 0}
+  .code-output{background:#0a0a14;border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:10px}
+  .ai-panel{background:var(--surface);border-radius:16px;border:1px solid var(--border);height:fit-content;position:sticky;top:74px;max-height:calc(100vh - 90px);display:flex;flex-direction:column;overflow:hidden}
+  .ai-header{padding:12px 14px;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;display:flex;align-items:center;gap:9px;font-weight:800;font-size:12px}
+  .ai-header .dot{width:7px;height:7px;background:#4ade80;border-radius:50%;animation:pulseGlow 1.5s infinite}
+  .ai-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px;max-height:400px}
+  .ai-msg{padding:9px 13px;border-radius:11px;font-size:12px;line-height:1.5;max-width:90%}
+  .ai-msg.bot{background:rgba(124,58,237,.2);color:#d4d0f0;align-self:flex-start}
+  .ai-msg.user{background:var(--surface-2);color:var(--text);align-self:flex-end}
+  .ai-input{padding:11px;border-top:1px solid var(--border);display:flex;gap:7px}
+  .ai-input input{flex:1;padding:8px 11px;border:1px solid var(--border);border-radius:8px;outline:none;font-size:12px;background:var(--bg);color:var(--text)}
+  .ai-input button{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;padding:8px 13px;border-radius:8px;font-weight:800}
+  .pvp-arena{background:linear-gradient(135deg,#450a0a,#7f1d1d,#1e1b4b);border-radius:22px;padding:30px;margin-bottom:20px}
+  .pvp-vs{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;margin:20px 0}
+  .pvp-player{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.15);border-radius:16px;padding:18px;text-align:center}
+  .pvp-player.enemy{border-color:rgba(239,68,68,.5)}
+  .pvp-avatar{font-size:60px;margin-bottom:8px}
+  .pvp-vs-label{font-size:40px;font-weight:900;color:#ef4444;animation:vsPulse 1.5s infinite}
+  .pvp-timer{background:rgba(0,0,0,.4);border-radius:10px;padding:10px;text-align:center;font-size:22px;font-weight:900;color:var(--gold);margin-bottom:14px}
+  .pvp-progress{display:flex;gap:8px;margin-bottom:14px}
+  .pvp-progress .dot{flex:1;height:6px;border-radius:3px;background:var(--border)}
+  .pvp-progress .dot.active{background:var(--gold)}
+  .division-badge{display:inline-flex;align-items:center;gap:8px;background:var(--surface-2);border:2px solid;border-radius:14px;padding:8px 14px;font-weight:900;font-size:14px;animation:divisionGlow 3s infinite}
+  .division-badge .div-icon{font-size:22px}
+  .lp-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:6px 0}
+  .lp-bar>div{height:100%;background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .5s}
+  .division-ladder{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+  .div-node{background:var(--surface-2);border:2px solid var(--border);border-radius:10px;padding:10px;text-align:center;font-size:11px}
+  .div-node.current{border-color:var(--gold);box-shadow:0 0 15px rgba(251,191,36,.5)}
+  .div-node.passed{border-color:var(--success);opacity:.7}
+  .div-node .div-em{font-size:24px}
+  .div-node .div-nm{font-weight:800;margin-top:3px}
+  .div-node .div-lp{color:var(--text-muted);font-size:10px}
+  .season-countdown{background:linear-gradient(135deg,#422006,#78350f);border:1px solid var(--gold);border-radius:14px;padding:14px;text-align:center;margin-bottom:14px}
+  .season-countdown .cd-num{font-size:24px;font-weight:900;color:var(--gold);letter-spacing:1px}
+  .bp-hero{background:linear-gradient(135deg,#1e1b4b,#4c1d95,#7c3aed);border-radius:22px;padding:30px;margin-bottom:20px}
+  .bp-progress{background:rgba(0,0,0,.3);border-radius:12px;padding:14px;margin-top:16px}
+  .bp-tiers{display:flex;gap:8px;overflow-x:auto;padding:16px 0}
+  .bp-tier{min-width:90px;background:var(--surface-2);border-radius:12px;padding:12px 8px;text-align:center;border:2px solid var(--border)}
+  .bp-tier.unlocked{border-color:var(--gold);background:linear-gradient(180deg,var(--surface-2),#422006)}
+  .bp-tier.current{border-color:var(--accent);box-shadow:0 0 20px rgba(6,182,212,.5)}
+  .bp-tier.locked{opacity:.5}
+  .bp-tier-num{font-size:11px;color:var(--text-muted);font-weight:800;margin-bottom:5px}
+  .bp-tier-icon{font-size:32px;margin:6px 0}
+  .bp-tier-name{font-size:10px;color:var(--text-muted)}
+  .bp-tier.free{border-top:4px solid var(--success)}
+  .bp-tier.premium{border-top:4px solid var(--gold)}
+  .bp-track-toggle{display:flex;gap:8px;margin-bottom:14px}
+  .bp-track-toggle button{padding:7px 16px;border-radius:9px;font-size:12px;font-weight:800;border:1px solid var(--border);background:var(--surface)}
+  .bp-track-toggle button.active{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#422006;border-color:transparent}
+  .traj-hero{background:linear-gradient(135deg,#064e3b,#10b981,#06b6d4);border-radius:22px;padding:30px;margin-bottom:20px}
+  .traj-steps{display:flex;flex-direction:column;gap:12px;position:relative;padding-left:36px}
+  .traj-steps::before{content:'';position:absolute;left:15px;top:20px;bottom:20px;width:3px;background:linear-gradient(180deg,var(--primary),var(--accent),var(--gold));border-radius:2px}
+  .traj-step{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;position:relative}
+  .traj-step.done{border-color:var(--success)}
+  .traj-step.active{border-color:var(--gold);box-shadow:0 0 25px rgba(251,191,36,.4)}
+  .traj-step::before{content:attr(data-num);position:absolute;left:-36px;top:16px;width:32px;height:32px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff;border:3px solid var(--bg)}
+  .traj-step.done::before{background:linear-gradient(135deg,var(--success),#047857);content:'✓'}
+  .goal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:14px}
+  .goal-card{background:var(--surface-2);border:2px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:.2s}
+  .goal-card:hover{border-color:var(--primary)}
+  .goal-card.selected{border-color:var(--gold)}
+  .goal-card .goal-icon{font-size:44px;margin-bottom:8px}
+  .goal-card .goal-name{font-size:13px;font-weight:800;margin-bottom:4px}
+  .goal-card .goal-desc{font-size:11px;color:var(--text-muted)}
+  .clan-hero{background:linear-gradient(135deg,#0c4a6e,#0369a1,#06b6d4);border-radius:22px;padding:30px;margin-bottom:20px}
+  .clan-card{background:linear-gradient(180deg,var(--surface),var(--bg2));border:2px solid var(--border);border-radius:16px;padding:18px;cursor:pointer;transition:.2s}
+  .clan-card:hover{border-color:var(--accent);transform:translateY(-3px)}
+  .clan-emblem{width:60px;height:60px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:32px;border:3px solid var(--gold)}
+  .clan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+  .clan-chat{background:var(--bg2);border-radius:14px;padding:14px;height:360px;display:flex;flex-direction:column;border:1px solid var(--border)}
+  .clan-chat-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+  .clan-msg{padding:8px 12px;border-radius:10px;background:var(--surface-2);font-size:12px;max-width:80%;align-self:flex-start}
+  .clan-msg.me{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;align-self:flex-end}
+  .clan-msg .author{font-weight:800;color:var(--gold);font-size:10px;display:block;margin-bottom:2px}
+  .clan-chat-input{display:flex;gap:8px}
+  .clan-chat-input input{flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none;font-size:12px}
+  .clan-war-banner{background:linear-gradient(135deg,#7f1d1d,#450a0a);border:2px solid var(--danger);border-radius:14px;padding:16px;margin-bottom:14px}
+  .clan-war-vs{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;text-align:center}
+  .craft-hero{background:linear-gradient(135deg,#7c2d12,#c2410c,#f59e0b);border-radius:22px;padding:30px;margin-bottom:20px}
+  .shard-balance{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:20px}
+  .shard-card{background:var(--surface-2);border:2px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+  .shard-card.common{border-color:var(--common)}
+  .shard-card.rare{border-color:var(--rare)}
+  .shard-card.epic{border-color:var(--epic)}
+  .shard-card.legendary{border-color:var(--legendary)}
+  .shard-card.mythic{border-color:var(--mythic)}
+  .shard-card .shard-icon{font-size:24px}
+  .shard-card .shard-name{font-size:10px;color:var(--text-muted);margin-top:3px}
+  .shard-card .shard-count{font-size:20px;font-weight:900;margin-top:4px}
+  .dup-item{background:var(--surface-2);border:2px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+  .dup-item .dup-emoji{font-size:34px}
+  .dup-item .dup-name{font-size:11px;font-weight:700;margin:5px 0}
+  .dup-item .dup-count{font-size:10px;color:var(--text-muted);margin-bottom:8px}
+  .craft-recipe{background:var(--surface-2);border:2px dashed var(--border);border-radius:14px;padding:16px;margin-bottom:12px;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}
+  .craft-recipe .arrow{font-size:30px;color:var(--gold)}
+  .tourn-hero{background:linear-gradient(135deg,#450a0a,#7f1d1d,#b91c1c);border-radius:22px;padding:30px;margin-bottom:20px;animation:tournamentPulse 3s infinite}
+  .tourn-countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+  .tourn-countdown .unit{background:rgba(0,0,0,.4);border:1px solid var(--danger);border-radius:12px;padding:12px;text-align:center}
+  .tourn-countdown .num{font-size:26px;font-weight:900;color:var(--gold)}
+  .tourn-countdown .lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase}
+  .tourn-bracket{display:flex;flex-direction:column;gap:10px}
+  .tourn-match{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px;display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
+  .tourn-match.active{border-color:var(--gold)}
+  .tourn-player{text-align:center}
+  .tourn-player .av{font-size:32px}
+  .tourn-player .nm{font-size:11px;font-weight:700;margin-top:2px}
+  .tourn-player .sc{font-size:20px;font-weight:900;color:var(--gold)}
+  .tourn-prize-pool{background:linear-gradient(135deg,#422006,#78350f);border:2px solid var(--gold);border-radius:14px;padding:16px;text-align:center;margin-bottom:14px}
+  .tourn-prize-pool .amount{font-size:32px;font-weight:900;color:var(--gold)}
+  .stream-box{background:#0a0a14;border:2px solid var(--danger);border-radius:18px;overflow:hidden;margin-bottom:20px}
+  .stream-header{background:linear-gradient(90deg,#450a0a,#7f1d1d);padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--danger)}
+  .live-badge{background:#ef4444;color:#fff;padding:3px 10px;border-radius:6px;font-weight:900;font-size:11px;display:flex;align-items:center;gap:5px;animation:liveBlink 1.5s infinite}
+  .live-badge::before{content:'';width:7px;height:7px;background:#fff;border-radius:50%}
+  .viewers{background:rgba(0,0,0,.4);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;color:#fca5a5}
+  .stream-content{padding:20px;min-height:400px;background:radial-gradient(ellipse at center,#1a0a0a 0%,#0a0a14 100%)}
+  .stream-main-arena{background:linear-gradient(135deg,#1e1b4b,#4c1d95);border-radius:14px;padding:22px;margin-bottom:18px}
+  .stream-arena-vs{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;text-align:center}
+  .stream-arena-vs .arena-player .p-av{font-size:60px}
+  .stream-arena-vs .arena-player .p-sc{font-size:32px;font-weight:900;color:var(--gold);margin-top:6px}
+  .stream-arena-vs .arena-player .p-nm{font-size:13px;font-weight:700;margin-top:2px}
+  .stream-commentary{background:rgba(0,0,0,.5);border-radius:12px;padding:14px;max-height:180px;overflow-y:auto;border:1px solid var(--border)}
+  .commentary-line{display:flex;gap:8px;padding:6px 0;font-size:12px}
+  .commentary-line .c-icon{font-size:16px}
+  .commentary-line .c-name{color:var(--accent);font-weight:800;flex-shrink:0}
+  .stream-question{background:var(--surface);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid var(--gold)}
+  .stream-question .q-num{font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:800}
+  .stream-question .q-text{font-size:16px;font-weight:700;margin-top:6px}
+  .stream-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .stream-opt{background:var(--surface-2);border:2px solid var(--border);border-radius:10px;padding:12px;font-size:13px;text-align:center;font-weight:700}
+  .stream-opt.revealed{border-color:var(--success);background:rgba(16,185,129,.15)}
+  .cases-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+  .case-card{background:linear-gradient(180deg,var(--surface),var(--bg2));border:2px solid var(--border);border-radius:16px;padding:18px;text-align:center;cursor:pointer;transition:.2s}
+  .case-card.bronze{border-color:#a16207}
+  .case-card.silver{border-color:#94a3b8}
+  .case-card.gold{border-color:var(--gold)}
+  .case-card.mythic{border-color:var(--mythic);animation:glowRainbow 4s infinite}
+  .case-emoji{font-size:60px;margin-bottom:10px;animation:bounce 2s infinite}
+  .case-name{font-size:14px;font-weight:800;margin-bottom:6px}
+  .case-price{font-size:18px;font-weight:900;color:var(--gold)}
+  .case-odds{font-size:10px;color:var(--text-muted);margin-top:8px}
+  .case-open-modal{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px}
+  .case-open-modal.show{display:flex}
+  .case-reel-container{width:100%;max-width:900px;overflow:hidden;position:relative;background:linear-gradient(180deg,var(--surface),var(--bg2));border:3px solid var(--gold);border-radius:20px;padding:24px 0}
+  .case-reel-pointer{position:absolute;top:0;bottom:0;left:50%;width:4px;background:var(--gold);transform:translateX(-50%);z-index:10}
+  .case-reel{display:flex;gap:10px;padding:0 20px;transition:transform 6s cubic-bezier(.15,.85,.15,1)}
+  .case-item{min-width:140px;height:180px;background:var(--surface-2);border:2px solid var(--border);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px}
+  .case-item .icon{font-size:52px;margin-bottom:6px}
+  .case-item .nm{font-size:11px;text-align:center;font-weight:700}
+  .case-item.r-common{border-color:var(--common)}
+  .case-item.r-rare{border-color:var(--rare)}
+  .case-item.r-epic{border-color:var(--epic)}
+  .case-item.r-legendary{border-color:var(--legendary)}
+  .case-item.r-mythic{border-color:var(--mythic);animation:glowRainbow 2s infinite}
+  .rarity-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:6px;font-weight:900;text-transform:uppercase}
+  .rarity-tag.common{background:rgba(148,163,184,.2);color:var(--common)}
+  .rarity-tag.rare{background:rgba(59,130,246,.2);color:var(--rare)}
+  .rarity-tag.epic{background:rgba(168,85,247,.2);color:var(--epic)}
+  .rarity-tag.legendary{background:rgba(245,158,11,.2);color:var(--legendary)}
+  .rarity-tag.mythic{background:rgba(239,68,68,.2);color:var(--mythic)}
+  .ctor-course{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:var(--surface-2);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .ctor-course .cc-info{flex:1;min-width:200px}
+  .ctor-course .cc-title{font-weight:800;font-size:14px}
+  .ctor-course .cc-meta{font-size:11px;color:var(--text-muted);margin-top:2px}
+  .ctor-lesson{padding:10px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .ctor-lesson .l-num{font-weight:800;color:var(--text-muted);font-size:11px;min-width:22px}
+  .ctor-lesson .l-title{flex:1;font-size:13px;font-weight:600}
+  .ctor-lesson .l-actions{display:flex;gap:4px}
+  .ctor-icon-btn{width:28px;height:28px;border-radius:7px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer}
+  .ctor-icon-btn:hover{background:var(--surface-2);border-color:var(--primary)}
+  .ctor-icon-btn.danger:hover{border-color:var(--danger);color:var(--danger)}
+  .ctor-empty{text-align:center;padding:40px 20px;color:var(--text-muted)}
+  .ctor-empty .big{font-size:56px;margin-bottom:12px}
+  .ctor-tabs{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:8px}
+  .ctor-tab{padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;color:var(--text-muted);cursor:pointer}
+  .ctor-tab.active{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff}
+  .lobby-wrapper{position:relative;width:100%;height:calc(100vh - 60px);min-height:600px;overflow:hidden;margin:0;padding:0}
+  .lobby-scene{position:absolute;inset:0;border-radius:0;border:none;overflow:hidden;background:radial-gradient(ellipse at 50% 100%,#4c1d95 0%,#1e1b4b 40%,#0f0e1a 100%);perspective:1400px;perspective-origin:50% 30%;transition:background .5s}
+  .lobby-bg-stars{position:absolute;inset:0;background-image:radial-gradient(2px 2px at 20% 30%,rgba(255,255,255,.7),transparent),radial-gradient(2px 2px at 60% 20%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 80% 50%,rgba(255,255,255,.8),transparent),radial-gradient(2px 2px at 30% 70%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 90% 15%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 10% 55%,rgba(255,255,255,.5),transparent);animation:starsTwinkle 4s ease-in-out infinite;pointer-events:none;opacity:.7}
+  .lobby-floor{position:absolute;left:-30%;right:-30%;bottom:-10%;height:60%;background:linear-gradient(180deg,transparent 0%,rgba(124,58,237,.35) 60%,rgba(6,182,212,.25) 100%),repeating-linear-gradient(90deg,rgba(124,58,237,.35) 0 2px,transparent 2px 80px),repeating-linear-gradient(0deg,rgba(6,182,212,.25) 0 2px,transparent 2px 80px);transform:rotateX(72deg);transform-origin:bottom center;opacity:.85;pointer-events:none}
+  .lobby-platform{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);width:420px;height:120px;border-radius:50%;background:radial-gradient(ellipse,rgba(251,191,36,.55),rgba(251,191,36,0) 70%);filter:blur(22px);pointer-events:none;animation:platformPulse 3s ease-in-out infinite}
+  .character-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform-style:preserve-3d;pointer-events:none;padding-bottom:40px}
+  .char{position:relative;width:200px;height:400px;transform-style:preserve-3d;animation:charFloat 4s ease-in-out infinite;cursor:pointer;pointer-events:auto;filter:drop-shadow(0 20px 30px rgba(0,0,0,.6))}
+  .char.hopping{animation:charFloat 4s ease-in-out infinite,hop .6s ease-in-out 1}
+  .char-body-wrap{position:absolute;inset:0;transform-style:preserve-3d;animation:charBreath 3s ease-in-out infinite;transform-origin:center bottom}
+  .char-shadow{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:150px;height:28px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.7),transparent 70%);animation:shadowPulse 4s ease-in-out infinite}
+  .char-nameplate{position:absolute;top:-56px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;padding:5px 16px;border-radius:999px;font-weight:800;font-size:13px;white-space:nowrap;border:2px solid var(--gold);box-shadow:0 0 20px rgba(251,191,36,.4);z-index:20}
+  .char-aura{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:340px;opacity:.35;z-index:0;pointer-events:none;animation:auraSpin 15s linear infinite;filter:drop-shadow(0 0 40px currentColor)}
+  .char-head{position:absolute;top:0;left:50%;transform:translateX(-50%);width:96px;height:96px;background:#f5c08a;border-radius:10px;z-index:5;box-shadow:inset -12px -12px 0 rgba(0,0,0,.15),inset 10px 10px 0 rgba(255,255,255,.18),0 0 24px rgba(0,0,0,.4);animation:headTilt 6s ease-in-out infinite}
+  .char-face{position:absolute;inset:0;pointer-events:none}
+  .char-eye{position:absolute;top:36%;width:16px;height:20px;background:#0f0e1a;border-radius:4px;transition:height .1s ease}
+  .char-eye.left{left:18%}
+  .char-eye.right{right:18%}
+  .char-mouth{position:absolute;bottom:22%;left:50%;transform:translateX(-50%);width:28px;height:5px;background:#0f0e1a;border-radius:3px;transition:.2s}
+  .char-torso{position:absolute;top:96px;left:50%;transform:translateX(-50%);width:116px;height:136px;background:#3b82f6;border-radius:10px;box-shadow:inset -14px -14px 0 rgba(0,0,0,.2),inset 12px 12px 0 rgba(255,255,255,.16);z-index:3;transition:background .3s}
+  /* ===== РУКИ — ДВЕ ЧАСТИ ===== */
+  .char-arm{position:absolute;top:100px;width:32px;transform-origin:top center;z-index:2;animation:armSwing 3.2s ease-in-out infinite;--limb-bg:#3b82f6}
+  .char-arm.left{left:calc(50% - 74px)}
+  .char-arm.right{left:calc(50% + 42px);animation-delay:.4s}
+  .char-arm-upper{width:32px;height:66px;border-radius:10px 10px 4px 4px;background:var(--limb-bg);box-shadow:inset -8px -8px 0 rgba(0,0,0,.2),inset 6px 6px 0 rgba(255,255,255,.12);transition:background .3s;position:relative;z-index:2}
+  .char-arm-lower{width:32px;height:66px;border-radius:4px 4px 10px 10px;background:var(--limb-bg);box-shadow:inset -8px -8px 0 rgba(0,0,0,.2),inset 6px 6px 0 rgba(255,255,255,.12);transform-origin:top center;transition:background .3s;position:relative;z-index:1;animation:elbowIdle 3.2s ease-in-out infinite}
+  .char-arm.left .char-arm-lower{animation-delay:.1s}
+  .char-arm.right .char-arm-lower{animation-delay:.5s}
+  /* ===== НОГИ — ДВЕ ЧАСТИ ===== */
+  .char-leg{position:absolute;top:232px;width:38px;transform-origin:top center;z-index:1;--limb-bg:#1e3a8a}
+  .char-leg.left{left:calc(50% - 54px)}
+  .char-leg.right{left:calc(50% + 16px)}
+  .char-leg-upper{width:38px;height:75px;border-radius:10px 10px 4px 4px;background:var(--limb-bg);box-shadow:inset -8px -8px 0 rgba(0,0,0,.3),inset 6px 6px 0 rgba(255,255,255,.1);transition:background .3s;position:relative;z-index:2}
+  .char-leg-lower{width:38px;height:75px;border-radius:4px 4px 10px 10px;background:var(--limb-bg);box-shadow:inset -8px -8px 0 rgba(0,0,0,.3),inset 6px 6px 0 rgba(255,255,255,.1);transform-origin:top center;transition:background .3s;position:relative;z-index:1;animation:kneeIdle 4s ease-in-out infinite}
+  .char-leg.right .char-leg-lower{animation-delay:.5s}
+  .char-hat{position:absolute;top:-52px;left:50%;transform:translateX(-50%);font-size:60px;line-height:1;z-index:15;pointer-events:none;animation:hatBob 3.5s ease-in-out infinite;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}
+  .char-glasses{position:absolute;top:26px;left:50%;transform:translateX(-50%);font-size:46px;z-index:8;pointer-events:none;filter:drop-shadow(0 3px 6px rgba(0,0,0,.5))}
+  .char-pet{position:absolute;bottom:16px;right:-72px;font-size:52px;z-index:6;pointer-events:none;animation:petBob 2s ease-in-out infinite;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6))}
+  .char.waving .char-arm.right{animation:waveUpper .7s ease-in-out 3 !important}
+  .char.waving .char-arm.right .char-arm-lower{animation:waveLower .7s ease-in-out 3 !important}
+  .char.emote-wave .char-arm.right{animation:waveUpper .7s ease-in-out 3 !important}
+  .char.emote-wave .char-arm.right .char-arm-lower{animation:waveLower .7s ease-in-out 3 !important}
+  .char.emote-dance{animation:charFloat 4s ease-in-out infinite,danceAnim .5s ease-in-out infinite !important}
+  .char.emote-dance .char-arm .char-arm-lower{animation:danceElbow .5s ease-in-out infinite !important}
+  .char.emote-dance .char-leg .char-leg-lower{animation:danceKnee .5s ease-in-out infinite !important}
+  .char.emote-laugh{animation:charFloat 4s ease-in-out infinite,laughShake .25s ease-in-out 8 !important}
+  .char.emote-laugh .char-mouth{height:14px;width:30px;border-radius:0 0 15px 15px;background:#0f0e1a}
+  .char.emote-flex .char-arm.left,
+  .char.emote-flex .char-arm.right{animation:flexUp .7s ease-in-out 3 !important}
+  .char.emote-flex .char-arm .char-arm-lower{animation:flexElbow .7s ease-in-out 3 !important}
+  .char.emote-celebrate{animation:charFloat 4s ease-in-out infinite,hop .6s ease-in-out 3 !important}
+  .char.emote-celebrate .char-arm.left,
+  .char.emote-celebrate .char-arm.right{animation:armsUp .8s ease-in-out 3 !important}
+  .char.emote-celebrate .char-arm .char-arm-lower{animation:armsUpElbow .8s ease-in-out 3 !important}
+  .char.emote-sixseven .char-arm.left{animation:sixSevenSway .9s ease-in-out 4 !important}
+  .char.emote-sixseven .char-arm.right{animation:sixSevenSway .9s ease-in-out 4 reverse !important}
+  .char.emote-sixseven .char-arm .char-arm-lower{animation:sixSevenElbow .9s ease-in-out 4 !important}
+  .char.emote-heart .char-arm.left,
+  .char.emote-heart .char-arm.right{animation:armsUp .8s ease-in-out 3 !important}
+  .char.emote-heart .char-arm .char-arm-lower{animation:armsUpElbow .8s ease-in-out 3 !important}
+  .char.emote-cool{animation:charFloat 4s ease-in-out infinite,headTilt 6s ease-in-out infinite !important}
+  .emote-effect{position:absolute;top:-140px;left:50%;transform:translateX(-50%);font-size:64px;font-weight:900;color:var(--gold);text-shadow:0 0 24px var(--gold),0 4px 12px rgba(0,0,0,.8);pointer-events:none;opacity:0;z-index:25;letter-spacing:6px;white-space:nowrap}
+  .emote-effect.show{animation:emoteFloatUp 2.2s ease-out forwards}
+  .lobby-hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.55);color:#fff;padding:8px 20px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.15);animation:hintPulse 3s ease-in-out infinite;pointer-events:auto;white-space:nowrap;cursor:pointer;z-index:15}
+  .lobby-hint:hover{background:rgba(0,0,0,.75);border-color:var(--gold)}
+  .lobby-hint kbd{background:rgba(251,191,36,.9);color:#422006;padding:2px 8px;border-radius:5px;font-family:inherit;font-weight:900;margin:0 2px;font-size:11px}
+  .lobby-left{position:absolute;left:20px;top:20px;width:320px;max-height:calc(100% - 40px);overflow-y:auto;z-index:10;display:flex;flex-direction:column;gap:12px;padding-right:4px}
+  .lobby-right{position:absolute;right:20px;top:20px;width:320px;max-height:calc(100% - 40px);overflow-y:auto;z-index:10;display:flex;flex-direction:column;gap:12px;padding-left:4px}
+  .lobby-left::-webkit-scrollbar,.lobby-right::-webkit-scrollbar{width:6px}
+  .lobby-left::-webkit-scrollbar-thumb,.lobby-right::-webkit-scrollbar-thumb{background:rgba(124,58,237,.4);border-radius:3px}
+  .lobby-panel{background:rgba(20,17,40,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  .lobby-panel-title{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .lobby-panel-title::before{content:'';width:4px;height:13px;background:linear-gradient(180deg,var(--gold),var(--primary));border-radius:2px}
+  .lobby-profile{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+  .lobby-avatar-stat{background:rgba(45,42,74,.6);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+  .lobby-xp{background:rgba(45,42,74,.6);border-radius:12px;padding:12px 14px}
+  .lobby-xp .progress-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:0}
+  .lobby-xp .progress-bar>div{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .4s}
+  /* ===== EMOTE WHEEL ===== */
+  .emote-wheel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;flex-direction:column;gap:22px;z-index:9999}
+  .emote-wheel-overlay.show{display:flex;animation:fadeIn .2s}
+  .emote-wheel{position:relative;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.22),rgba(0,0,0,.55));border:2px dashed rgba(251,191,36,.4);animation:wheelIn .35s cubic-bezier(.17,.67,.12,.99);box-shadow:0 0 90px rgba(124,58,237,.45)}
+  .emote-wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:52px;box-shadow:0 0 50px rgba(124,58,237,.8);border:3px solid rgba(255,255,255,.25);pointer-events:none}
+  .emote-item{position:absolute;top:50%;left:50%;width:92px;height:92px;border-radius:50%;background:rgba(34,31,58,.95);border:2px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s,transform .15s;margin:-46px 0 0 -46px;user-select:none}
+  .emote-item:hover{background:linear-gradient(135deg,rgba(124,58,237,.95),rgba(6,182,212,.85));border-color:var(--gold);box-shadow:0 0 40px rgba(124,58,237,.9);transform:scale(1.18) translateZ(0)}
+  .emote-item:active{transform:scale(1.05)}
+  .emote-item .em-icon{font-size:40px;line-height:1;pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+  .emote-item .em-name{font-size:10px;color:var(--text-muted);margin-top:2px;font-weight:700;pointer-events:none;transition:color .15s}
+  .emote-item:hover .em-name{color:#fff}
+  .emote-item .em-key{position:absolute;top:-6px;right:-6px;width:24px;height:24px;background:var(--gold);color:#422006;border-radius:50%;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);pointer-events:none}
+  .emote-item.sixseven{background:linear-gradient(135deg,rgba(251,191,36,.35),rgba(239,68,68,.35));border-color:var(--gold);animation:pulseGlow 2s infinite}
+  .emote-hint{color:var(--text-muted);font-size:13px;text-align:center;font-weight:700}
+  .emote-hint kbd{background:var(--surface);border:1px solid var(--border);padding:2px 8px;border-radius:5px;font-family:inherit;font-weight:900;color:var(--text);margin:0 3px}
+  .emote-title{font-size:24px;font-weight:900;background:linear-gradient(135deg,var(--gold),#fef3c7,var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px}
+  @media(max-width:1100px){.lobby-left,.lobby-right{width:260px}.emote-wheel{width:360px;height:360px}.emote-item{width:78px;height:78px;margin:-39px 0 0 -39px}.emote-item .em-icon{font-size:32px}}
+  @media(max-width:900px){.lobby-wrapper{height:auto;min-height:auto;padding:14px;display:flex;flex-direction:column;gap:14px}.lobby-scene{position:relative;min-height:480px;border-radius:20px}.lobby-left,.lobby-right{position:relative;left:auto;right:auto;top:auto;width:auto;max-height:none;overflow:visible;padding:0}.layout{grid-template-columns:1fr}.course-hero{grid-template-columns:1fr}.learn-layout{grid-template-columns:1fr}.learn-sidebar,.ai-panel{position:static;max-height:none}.char{transform:scale(.85)}.emote-wheel{width:320px;height:320px}.emote-item{width:68px;height:68px;margin:-34px 0 0 -34px}.emote-item .em-icon{font-size:26px}.emote-item .em-name{font-size:8px}}
+  @media(max-width:600px){.pvp-vs,.clan-war-vs{grid-template-columns:1fr}.tourn-countdown{grid-template-columns:repeat(2,1fr)}.stream-options{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand" onclick="showPage('activities')"><div class="brand-icon">◆</div>Voxel</div>
+  <div class="nav-main">
+    <button class="active" data-page="activities">🎮</button>
+    <button data-page="catalog">📚</button>
+    <button data-page="my-learning">🎓</button>
+    <button data-page="pvp">⚔️</button>
+    <button data-page="clans">🛡️</button>
+    <button data-page="tournaments">🏟️</button>
+    <button data-page="cases">📦</button>
+    <button data-page="crafting">⚗️</button>
+    <button data-page="battlepass">🎫</button>
+    <button data-page="trajectory">🧭</button>
+    <button data-page="constructor">🛠️</button>
+  </div>
+  <div class="spacer"></div>
+  <div class="streak"><span class="flame">🔥</span><span id="streakCount">5</span></div>
+  <div class="wallet" onclick="showPage('activities')"><div class="coin-icon">V</div><span id="coinBalance">1 250</span></div>
+  <div class="level-badge">
+    <div class="xp-ring">
+      <svg width="30" height="30"><circle cx="15" cy="15" r="12" stroke="#3a3560" stroke-width="3" fill="none"/><circle id="xpCircle" cx="15" cy="15" r="12" stroke="url(#grad)" stroke-width="3" fill="none" stroke-dasharray="75.4" stroke-dashoffset="75.4" stroke-linecap="round"/><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+      <div class="lvl" id="lvlBadge">3</div>
+    </div>
+    <div class="xp-info"><div class="label">LVL</div><div class="value" id="xpValue">140/300</div></div>
+  </div>
+  <div class="icon-btn" onclick="openEmoteWheel()" title="Эмоции (B)">😀</div>
+  <div class="icon-btn" id="musicBtn" onclick="toggleMusic()" title="Музыка">🎵</div>
+  <div class="user-avatar-mini" id="topAvatar" onclick="showPage('activities')">🧑‍🎓</div>
+</div>
+
+<div class="page active" id="page-activities">
+  <div class="lobby-wrapper">
+    <div class="lobby-scene" id="lobbyScene">
+      <div class="lobby-bg-stars"></div>
+      <div class="lobby-floor"></div>
+      <div class="lobby-platform"></div>
+      <div class="character-stage">
+        <div class="char" id="char-root" title="Нажми — помашет 👋 (или B — эмоции)">
+          <div class="char-shadow"></div>
+          <div class="char-nameplate"><span id="char-name">Ученик</span></div>
+          <div class="char-aura" id="char-aura"></div>
+          <div class="char-body-wrap" id="char-body-wrap">
+            <!-- НОГИ: 2 части каждая -->
+            <div class="char-leg left" id="char-leg-left">
+              <div class="char-leg-upper"></div>
+              <div class="char-leg-lower"></div>
+            </div>
+            <div class="char-leg right" id="char-leg-right">
+              <div class="char-leg-upper"></div>
+              <div class="char-leg-lower"></div>
+            </div>
+            <!-- ТУЛОВИЩЕ -->
+            <div class="char-torso" id="char-torso"></div>
+            <!-- РУКИ: 2 части каждая -->
+            <div class="char-arm left" id="char-arm-left">
+              <div class="char-arm-upper"></div>
+              <div class="char-arm-lower"></div>
+            </div>
+            <div class="char-arm right" id="char-arm-right">
+              <div class="char-arm-upper"></div>
+              <div class="char-arm-lower"></div>
+            </div>
+            <!-- ГОЛОВА -->
+            <div class="char-head" id="char-head">
+              <div class="char-face">
+                <div class="char-eye left"></div>
+                <div class="char-eye right"></div>
+                <div class="char-mouth"></div>
+              </div>
+            </div>
+            <div class="char-hat" id="char-hat"></div>
+            <div class="char-glasses" id="char-glasses"></div>
+            <div class="char-pet" id="char-pet"></div>
+            <div class="emote-effect" id="emote-effect"></div>
+          </div>
+        </div>
+      </div>
+      <div class="lobby-hint" onclick="openEmoteWheel()">👆 Клик — помахать · <kbd>B</kbd> или <kbd>😀</kbd> — эмоции</div>
+    </div>
+
+    <div class="lobby-left">
+      <div class="lobby-panel">
+        <div class="lobby-panel-title">🎭 Скины</div>
+        <div class="slot-tabs" id="slotTabs">
+          <button class="slot-tab active" data-slot="base">👤</button>
+          <button class="slot-tab" data-slot="hat">🎩</button>
+          <button class="slot-tab" data-slot="glasses">🕶️</button>
+          <button class="slot-tab" data-slot="bg">🌈</button>
+          <button class="slot-tab" data-slot="pet">🐾</button>
+          <button class="slot-tab" data-slot="aura">✨</button>
+        </div>
+        <div class="items-grid" id="itemsGrid"></div>
+      </div>
+    </div>
+
+    <div class="lobby-right">
+      <div class="lobby-panel">
+        <div class="lobby-panel-title">👤 Профиль</div>
+        <div class="lobby-profile">
+          <div class="lobby-avatar-stat"><div style="font-size:13px;color:var(--text-muted);font-weight:700;">УРОВЕНЬ</div><div style="font-size:28px;font-weight:900;color:var(--gold);" id="lobbyLevel">3</div></div>
+          <div class="lobby-avatar-stat"><div style="font-size:13px;color:var(--text-muted);font-weight:700;">V-КОИНЫ</div><div style="font-size:28px;font-weight:900;color:var(--gold);" id="lobbyCoins">1 250</div></div>
+          <div class="lobby-avatar-stat"><div style="font-size:13px;color:var(--text-muted);font-weight:700;">СЕРИЯ</div><div style="font-size:28px;font-weight:900;color:#ef4444;" id="lobbyStreak">🔥 5</div></div>
+        </div>
+        <div class="lobby-xp">
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-muted);">XP</span><strong id="lobbyXpText">140 / 300</strong></div>
+          <div class="progress-bar"><div id="lobbyXpFill" style="width:0%"></div></div>
+        </div>
+        <button class="btn btn-gold btn-full" style="margin-top:14px;" id="claimStreakBtn" onclick="claimDaily()">🎁 Забрать бонус дня</button>
+      </div>
+      <div class="lobby-panel">
+        <div class="lobby-panel-title">📅 Серия входа</div>
+        <div class="streak-calendar" id="streakCalendar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="col-left">
+      <div class="card">
+        <div class="card-header"><span><span class="icon">🎡</span>Колесо</span><span style="font-size:10px;color:var(--text-muted);">1/день</span></div>
+        <div class="wheel-container"><div class="wheel-pointer"></div><div class="wheel" id="wheel"></div><div class="wheel-center">🎁</div></div>
+        <button class="btn btn-gold btn-full" style="margin-top:16px;" id="spinBtn" onclick="spinWheel()">🎡 Крутить</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><span><span class="icon">🎁</span>Сундук</span><span style="font-size:10px;color:var(--gold);font-weight:800;">−30 V</span></div>
+        <div class="chest-wrap"><div class="chest" id="chest" onclick="openChest()">🎁</div>
+          <button class="btn btn-primary btn-full" style="margin-top:12px;" onclick="openChest()">🔓 Открыть за 30 V</button></div>
+      </div>
+    </div>
+    <div class="col-center">
+      <div class="card">
+        <div class="card-header"><span><span class="icon">🤖</span>AI-квесты</span><span style="font-size:10px;color:var(--accent);font-weight:800;" id="questsDone">0/3</span></div>
+        <div id="questsList"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span><span class="icon">🏆</span>Достижения</span><span style="font-size:10px;color:var(--text-muted);" id="achDone">0/18</span></div>
+        <div class="ach-grid" id="achGrid"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span><span class="icon">🛒</span>Магазин</span><span style="font-size:10px;color:var(--gold);font-weight:800;" id="shopBalance">V 1 250</span></div>
+        <div id="shopContent"></div>
+      </div>
+    </div>
+    <div class="col-right">
+      <div class="card"><div class="card-header"><span><span class="icon">👑</span>Рейтинг</span></div><div id="leaderboard"></div></div>
+      <div class="card"><div class="card-header"><span><span class="icon">🔥</span>Стрики</span></div><div id="courseStreaks" style="font-size:12px;"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-catalog">
+  <div class="container">
+    <div class="catalog-hero">
+      <h1>📚 Каталог</h1><p>Реальные знания + игровые награды.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-gold" onclick="showPage('my-learning')">🎓 Продолжить</button>
+        <button class="btn btn-outline" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff;" onclick="showPage('trajectory')">🧭 AI-путь</button>
+        <button class="btn btn-outline" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff;" onclick="showPage('constructor')">🛠️ Создать курс</button>
+      </div>
+    </div>
+    <div class="filter-chips">
+      <button class="chip active" data-filter="all">Все</button><button class="chip" data-filter="programming">💻</button>
+      <button class="chip" data-filter="electronics">⚡</button><button class="chip" data-filter="3d">🧊</button>
+      <button class="chip" data-filter="data">📊</button><button class="chip" data-filter="custom">🛠️ Мои</button>
+    </div>
+    <div class="course-grid" id="catalogGrid"></div>
+  </div>
+</div>
+
+<div class="page" id="page-course"><div class="container">
+  <button class="btn btn-outline btn-sm" onclick="showPage('catalog')" style="margin-bottom:16px;">← Назад</button>
+  <div id="courseDetail"></div>
+</div></div>
+
+<div class="page" id="page-learning"><div class="learn-layout">
+  <aside class="learn-sidebar">
+    <h4>Прогресс</h4>
+    <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span id="progressLabel">0 из 0</span><strong id="progressPercent">0%</strong></div>
+    <div class="progress-bar"><div id="progressFill" style="width:0%"></div></div>
+    <h4 style="margin-top:16px;">Содержание</h4><div id="lessonList"></div>
+    <button class="btn btn-outline btn-full btn-sm" style="margin-top:10px;" onclick="showPage('catalog')">← Каталог</button>
+  </aside>
+  <main class="learn-main" id="lessonContent"></main>
+  <aside class="ai-panel">
+    <div class="ai-header"><span class="dot"></span>AI-ассистент</div>
+    <div class="ai-messages" id="aiMessages"><div class="ai-msg bot">Привет! 👋</div></div>
+    <div class="ai-input"><input id="aiInput" placeholder="Вопрос..." onkeydown="if(event.key==='Enter')askAI()"><button onclick="askAI()">→</button></div>
+  </aside>
+</div></div>
+
+<div class="page" id="page-my-learning"><div class="container">
+  <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+    <div><h1 style="font-size:26px;font-weight:900;">🎓 Моё обучение</h1></div>
+    <button class="btn btn-primary btn-sm" onclick="showPage('catalog')">＋ Найти</button>
+  </div>
+  <div class="course-grid" id="myCoursesGrid"></div>
+</div></div>
+
+<div class="page" id="page-pvp">
+  <div class="container">
+    <div class="pvp-arena">
+      <h1 style="font-size:28px;font-weight:900;margin-bottom:8px;">⚔️ PvP Арена</h1>
+      <p style="opacity:.9;max-width:600px;">5 вопросов, 15 секунд. Победа: +20 LP, +100 V, +150 XP.</p>
+    </div>
+    <div class="card">
+      <div class="card-header"><span><span class="icon">⚔️</span>Дивизион</span></div>
+      <div id="divisionDisplay"></div>
+      <div class="lp-bar" style="margin-top:14px;"><div id="lpFill" style="width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:4px;"><span id="lpText">0/100</span><span id="lpNext">—</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span><span class="icon">🎖️</span>Дивизионы</span></div>
+      <div class="division-ladder" id="divisionLadder"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span><span class="icon">📅</span>Конец сезона</span></div>
+      <div class="season-countdown"><div style="font-size:11px;color:var(--text-muted);letter-spacing:2px;">ДО СБРОСА</div><div class="cd-num" id="seasonResetCountdown">30 дн 00:00:00</div></div>
+    </div>
+    <div id="pvpLobby">
+      <div class="card">
+        <div class="card-header"><span><span class="icon">🎯</span>Режим</span></div>
+        <div class="goal-grid">
+          <div class="goal-card" onclick="startDuel('electronics')"><div class="goal-icon">⚡</div><div class="goal-name">Электроника</div></div>
+          <div class="goal-card" onclick="startDuel('programming')"><div class="goal-icon">💻</div><div class="goal-name">Код</div></div>
+          <div class="goal-card" onclick="startDuel('3d')"><div class="goal-icon">🧊</div><div class="goal-name">3D</div></div>
+          <div class="goal-card" onclick="startDuel('data')"><div class="goal-icon">📊</div><div class="goal-name">Данные</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="pvpFight" style="display:none;">
+      <div class="card">
+        <div class="pvp-vs">
+          <div class="pvp-player"><div class="pvp-avatar" id="pvpMyAvatar">🧑‍🎓</div><div style="font-weight:800;" id="pvpMyName">Ты</div></div>
+          <div class="pvp-vs-label">VS</div>
+          <div class="pvp-player enemy"><div class="pvp-avatar" id="pvpEnemyAvatar">🤖</div><div style="font-weight:800;" id="pvpEnemyName">Бот</div></div>
+        </div>
+        <div class="pvp-timer" id="pvpTimer">⏱ 15</div>
+        <div class="pvp-progress" id="pvpProgress"></div>
+        <div class="quiz-block" id="pvpQuestionBlock"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-clans">
+  <div class="container">
+    <div class="clan-hero"><h1 style="font-size:28px;font-weight:900;">🛡️ Кланы</h1><p style="opacity:.9;">Объединяйся, выполняй квесты, сражайся.</p></div>
+    <div id="clanNotIn">
+      <div class="card">
+        <div class="card-header"><span><span class="icon">➕</span>Создать клан</span></div>
+        <input id="clanNameInput" placeholder="Название" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none;margin-bottom:10px;">
+        <input id="clanTagInput" maxlength="4" placeholder="Тег" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none;margin-bottom:10px;text-transform:uppercase;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+          <div class="goal-card emblem-option" onclick="selectEmblem('🐺',this)" style="width:48px;padding:6px;"><div style="font-size:22px;">🐺</div></div>
+          <div class="goal-card emblem-option" onclick="selectEmblem('🐉',this)" style="width:48px;padding:6px;"><div style="font-size:22px;">🐉</div></div>
+          <div class="goal-card emblem-option" onclick="selectEmblem('🦅',this)" style="width:48px;padding:6px;"><div style="font-size:22px;">🦅</div></div>
+          <div class="goal-card emblem-option" onclick="selectEmblem('🦁',this)" style="width:48px;padding:6px;"><div style="font-size:22px;">🦁</div></div>
+          <div class="goal-card emblem-option" onclick="selectEmblem('🔥',this)" style="width:48px;padding:6px;"><div style="font-size:22px;">🔥</div></div>
+          <div class="goal-card emblem-option" onclick="selectEmblem('⚡',this)" style="width:48px;padding:6px;"><div style="font-size:22px;">⚡</div></div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="createClan()">🛡️ Создать</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><span><span class="icon">🔍</span>Найти клан</span></div>
+        <input id="clanSearch" placeholder="Поиск..." oninput="renderClanList()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none;margin-bottom:12px;">
+        <div class="clan-grid" id="clanGrid"></div>
+      </div>
+    </div>
+    <div id="clanIn" style="display:none;">
+      <div id="clanHeader"></div>
+      <div style="display:grid;grid-template-columns:1fr 380px;gap:16px;margin-top:16px;">
+        <div>
+          <div class="card"><div class="card-header"><span><span class="icon">⚔️</span>Клановые квесты</span><span style="font-size:10px;color:var(--gold);font-weight:800;" id="clanQuestsProgress">0/3</span></div><div id="clanQuestsList"></div></div>
+          <div class="card"><div class="card-header"><span><span class="icon">👥</span>Участники</span></div><div id="clanMembersList"></div></div>
+          <div class="card"><div class="card-header"><span><span class="icon">🔥</span>Война</span></div><div id="clanWar"></div></div>
+        </div>
+        <div>
+          <div class="card"><div class="card-header"><span><span class="icon">💬</span>Чат</span></div>
+            <div class="clan-chat">
+              <div class="clan-chat-messages" id="clanChatMessages"></div>
+              <div class="clan-chat-input"><input id="clanChatInput" placeholder="Сообщение..." onkeydown="if(event.key==='Enter')sendClanMsg()"><button class="btn btn-primary btn-sm" onclick="sendClanMsg()">→</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-tournaments">
+  <div class="container">
+    <div class="tourn-hero">
+      <div style="font-size:12px;letter-spacing:2px;font-weight:800;opacity:.9;">ЕЖЕДНЕВНЫЙ ТУРНИР</div>
+      <h1 style="font-size:30px;font-weight:900;margin:6px 0 10px;">🏟️ "Молниеносный квиз"</h1>
+      <div class="tourn-countdown">
+        <div class="unit"><div class="num" id="cdH">00</div><div class="lbl">часов</div></div>
+        <div class="unit"><div class="num" id="cdM">00</div><div class="lbl">минут</div></div>
+        <div class="unit"><div class="num" id="cdS">00</div><div class="lbl">секунд</div></div>
+        <div class="unit"><div class="num" id="cdP">0</div><div class="lbl">игроков</div></div>
+      </div>
+    </div>
+    <div class="tourn-prize-pool"><div style="font-size:12px;letter-spacing:2px;color:var(--text-muted);font-weight:800;">ПРИЗОВОЙ ФОНД</div><div class="amount" id="tournPrize">2 400 V</div></div>
+    <div class="card">
+      <div class="card-header"><span><span class="icon">🎮</span>Управление</span></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <button class="btn btn-danger" id="tournJoinBtn" onclick="joinTournament()">⚔️ Взнос 100 V</button>
+        <button class="btn btn-primary" id="watchStreamBtn" onclick="watchStream()" style="display:none;">📺 Трансляция</button>
+        <span style="font-size:12px;color:var(--text-muted);" id="tournStatus">Не зарегистрирован</span>
+      </div>
+    </div>
+    <div class="stream-box" id="streamBox" style="display:none;">
+      <div class="stream-header"><div class="live-badge">LIVE</div><div style="font-weight:800;font-size:13px;">🏆 Финал</div><div class="spacer"></div><div class="viewers" id="streamViewers">👁 1 247</div></div>
+      <div class="stream-content">
+        <div class="stream-main-arena">
+          <div class="stream-arena-vs">
+            <div class="arena-player"><div class="p-av" id="streamMyAv">🧑‍🎓</div><div class="p-nm" id="streamMyName">Вы</div><div class="p-sc" id="streamMyScore">0</div></div>
+            <div style="font-size:32px;font-weight:900;color:#ef4444;">VS</div>
+            <div class="arena-player"><div class="p-av" id="streamEnemyAv">🤖</div><div class="p-nm" id="streamEnemyName">НейроБот</div><div class="p-sc" id="streamEnemyScore">0</div></div>
+          </div>
+        </div>
+        <div class="stream-question" id="streamQuestionBox" style="display:none;">
+          <div class="q-num" id="streamQNum">Раунд 1</div>
+          <div class="q-text" id="streamQText">—</div>
+          <div class="stream-options" id="streamOpts"></div>
+        </div>
+        <div class="section-title">🎙 Комментарий AI</div>
+        <div class="stream-commentary" id="streamCommentary"></div>
+        <div style="text-align:center;margin-top:14px;"><button class="btn btn-outline btn-sm" onclick="closeStream()">✕ Закрыть</button></div>
+      </div>
+    </div>
+    <div class="card"><div class="card-header"><span><span class="icon">🏆</span>Сетка</span><span style="font-size:10px;color:var(--text-muted);" id="tournRoundInfo">Не начат</span></div><div class="tourn-bracket" id="tournBracket"></div></div>
+  </div>
+</div>
+
+<div class="page" id="page-cases">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:24px;"><h1 style="font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--accent),var(--epic));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">📦 Кейсы</h1></div>
+    <div class="cases-grid" id="casesGrid"></div>
+    <div class="card"><div class="card-header"><span><span class="icon">📜</span>История</span></div><div id="caseHistory" style="font-size:12px;color:var(--text-muted);">Пусто</div></div>
+  </div>
+</div>
+
+<div class="case-open-modal" id="caseOpenModal">
+  <div style="text-align:center;margin-bottom:20px;"><h2 style="font-size:26px;font-weight:900;color:var(--gold);" id="caseOpenTitle">Открытие</h2></div>
+  <div class="case-reel-container"><div class="case-reel-pointer"></div><div class="case-reel" id="caseReel"></div></div>
+  <div style="margin-top:20px;text-align:center;" id="caseResult"></div>
+  <button class="btn btn-gold" style="margin-top:16px;display:none;" id="caseCloseBtn" onclick="closeCaseModal()">✨ Забрать</button>
+</div>
+
+<div class="page" id="page-crafting">
+  <div class="container">
+    <div class="craft-hero"><h1 style="font-size:30px;font-weight:900;">⚗️ Кузница скинов</h1><p style="opacity:.9;">Разбирай дубликаты, создавай новые.</p></div>
+    <div class="card"><div class="card-header"><span><span class="icon">💠</span>Осколки</span></div><div class="shard-balance" id="shardBalance"></div></div>
+    <div class="card">
+      <div class="card-header"><span><span class="icon">♻️</span>Дубликаты</span><span style="font-size:10px;color:var(--text-muted);" id="dupsTotal">0</span></div>
+      <div id="dupsContainer"></div>
+      <button class="btn btn-danger btn-full" style="margin-top:12px;" onclick="dismantleAll()">♻️ Разобрать всё</button>
+    </div>
+    <div class="card"><div class="card-header"><span><span class="icon">🔨</span>Крафт</span></div><div id="craftRecipes"></div></div>
+  </div>
+</div>
+
+<div class="page" id="page-battlepass">
+  <div class="container">
+    <div class="bp-hero">
+      <div style="font-size:12px;letter-spacing:2px;opacity:.8;font-weight:800;">СЕЗОН 1</div>
+      <h1 style="font-size:30px;font-weight:900;margin:6px 0 8px;">🎫 Наука и технологии</h1>
+      <div class="bp-progress">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span>Прогресс</span><strong id="bpProgressText">0 / 5000 XP</strong></div>
+        <div style="height:8px;background:rgba(0,0,0,.4);border-radius:4px;overflow:hidden;"><div id="bpProgressFill" style="height:100%;background:linear-gradient(90deg,var(--gold),var(--accent));width:0%;"></div></div>
+      </div>
+    </div>
+    <div class="bp-track-toggle"><button class="active" data-track="free">🎁 Free</button><button data-track="premium">👑 Premium</button></div>
+    <div class="card" style="padding:14px;"><div class="bp-tiers" id="bpTiers"></div></div>
+  </div>
+</div>
+
+<div class="page" id="page-trajectory">
+  <div class="container">
+    <div class="traj-hero"><div style="font-size:12px;letter-spacing:2px;opacity:.85;font-weight:800;">AI-ТРАЕКТОРИЯ</div><h1 style="font-size:28px;font-weight:900;margin:6px 0 8px;">🧭 Персональный путь</h1></div>
+    <div class="card"><div class="card-header"><span><span class="icon">🎯</span>Выбери цель</span></div><div class="goal-grid" id="goalGrid"></div></div>
+    <div id="trajResult" style="display:none;">
+      <div class="card"><div class="card-header"><span><span class="icon">🗺️</span>Путь: <span id="trajGoalName" style="color:var(--gold);margin-left:6px;"></span></span><span style="font-size:11px;color:var(--text-muted);" id="trajProgressText">0/5</span></div><div class="traj-steps" id="trajSteps"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-constructor">
+  <div class="container">
+    <div class="catalog-hero" style="background:linear-gradient(135deg,#7c2d12,#c2410c,#f59e0b)">
+      <h1>🛠️ Конструктор курсов</h1>
+      <p>Создавай свои курсы. Всё сохраняется в браузере.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-gold" onclick="createNewCourse()">➕ Новый курс</button>
+        <button class="btn btn-outline" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff;" onclick="exportCustomCourses()">📤 Экспорт JSON</button>
+        <button class="btn btn-outline" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff;" onclick="importCustomCourses()">📥 Импорт JSON</button>
+      </div>
+    </div>
+    <div id="constructorList">
+      <div class="card"><div class="card-header"><span><span class="icon">📚</span>Мои курсы</span><span style="font-size:10px;color:var(--text-muted);" id="customCoursesCount">0</span></div><div id="myCustomCourses"></div></div>
+    </div>
+    <div id="constructorEditor" style="display:none;">
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" onclick="closeCourseEditor()">← К списку</button>
+        <button class="btn btn-gold btn-sm" onclick="saveCourseEditor()">💾 Сохранить</button>
+        <button class="btn btn-primary btn-sm" onclick="previewCourse()">👁 Предпросмотр</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><span><span class="icon">📝</span>Редактор курса</span></div>
+        <div class="ctor-tabs">
+          <div class="ctor-tab active" data-ctor-tab="main">Основное</div>
+          <div class="ctor-tab" data-ctor-tab="lessons">Уроки</div>
+        </div>
+        <div id="ctorTab-main">
+          <label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:4px;">Название</label>
+          <input id="ce-title" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none;margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:4px;">Описание</label>
+          <textarea id="ce-desc" style="width:100%;min-height:80px;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none;margin-bottom:12px;resize:vertical;"></textarea>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
+            <div><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:4px;">Иконка</label>
+              <input id="ce-icon" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none;text-align:center;font-size:20px;"></div>
+            <div><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:4px;">Категория</label>
+              <select id="ce-cat" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none;">
+                <option value="programming">💻 Код</option><option value="electronics">⚡ Электроника</option>
+                <option value="3d">🧊 3D</option><option value="data">📊 Данные</option><option value="custom">🛠️ Другое</option>
+              </select></div>
+            <div><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:4px;">Уровень</label>
+              <select id="ce-level" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none;">
+                <option>Начинающий</option><option>Средний</option><option>Продвинутый</option>
+              </select></div>
+            <div><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:4px;">Длительность</label>
+              <input id="ce-duration" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none;"></div>
+          </div>
+          <label style="font-size:12px;color:var(--text-muted);display:block;margin:12px 0 4px;">Цвет обложки</label>
+          <div id="ce-colors" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+        </div>
+        <div id="ctorTab-lessons" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+            <div style="font-size:13px;color:var(--text-muted);">Уроков: <strong id="ce-lesson-count">0</strong></div>
+            <button class="btn btn-primary btn-sm" onclick="addLessonToEditing()">➕ Добавить урок</button>
+          </div>
+          <div id="ce-lessons-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="emote-wheel-overlay" id="emoteWheel">
+  <div class="emote-title">✨ ЭМОЦИИ</div>
+  <div class="emote-wheel" id="emoteWheelInner">
+    <div class="emote-wheel-center">😀</div>
+  </div>
+  <div class="emote-hint">Клик по эмоции · <kbd>1</kbd>-<kbd>8</kbd> · <kbd>ESC</kbd> закрыть</div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<div class="modal-bg" id="modalBg"><div class="modal-box" id="modalBox"></div></div>
+
+<script>
+/* ==================== STATE ==================== */
+const state={
+  coins:1250,xp:140,level:3,xpPerLevel:300,streak:5,streakClaimed:[1,2,3,4],
+  spinUsed:false,chestOpened:false,quests:[],
+  achievements:[
+    {id:'a1',icon:'🌱',name:'Первые шаги',unlocked:true,desc:'Пройден 1 урок'},
+    {id:'a2',icon:'📚',name:'Знаток',unlocked:true,desc:'10 уроков'},
+    {id:'a3',icon:'💰',name:'Накопитель',unlocked:true,desc:'1000 V'},
+    {id:'a4',icon:'🔥',name:'На огне',unlocked:true,desc:'Серия 5'},
+    {id:'a5',icon:'👑',name:'Мастер',unlocked:false,desc:'Ур. 10'},
+    {id:'a6',icon:'💎',name:'Коллекц.',unlocked:false,desc:'5 скинов'},
+    {id:'a7',icon:'⚔️',name:'Дуэлянт',unlocked:false,desc:'5 PvP побед'},
+    {id:'a8',icon:'🎫',name:'Сезон',unlocked:false,desc:'BP Ур.10'},
+    {id:'a9',icon:'🧭',name:'Путешеств.',unlocked:false,desc:'AI-путь'},
+    {id:'a10',icon:'🛡️',name:'Клановец',unlocked:false,desc:'Вступи в клан'},
+    {id:'a11',icon:'🏟️',name:'Турнирист',unlocked:false,desc:'Победа в турнире'},
+    {id:'a12',icon:'📦',name:'Открыватель',unlocked:false,desc:'10 кейсов'},
+    {id:'a13',icon:'⚗️',name:'Кузнец',unlocked:false,desc:'10 крафтов'},
+    {id:'a14',icon:'💠',name:'Мифик',unlocked:false,desc:'Мифический скин'},
+    {id:'a15',icon:'🥇',name:'Золото',unlocked:false,desc:'Золото+ PvP'},
+    {id:'a16',icon:'👑',name:'Легенда',unlocked:false,desc:'Легенда PvP'},
+    {id:'a17',icon:'🛠️',name:'Автор',unlocked:false,desc:'Создай курс'},
+    {id:'a18',icon:'💻',name:'Кодер',unlocked:false,desc:'Пройди код-тест'}
+  ],
+  inventory:['base-1','bg-1'],
+  duplicates:{},
+  shards:{common:0,rare:0,epic:0,legendary:0,mythic:0},
+  craftHistory:[],
+  equipped:{base:'base-1',hat:null,glasses:null,bg:'bg-1',pet:null,aura:null},
+  activeSlot:'base',
+  courseProgress:{1:new Set([1,2])},
+  courseStreaks:{1:{count:3,lastDay:Date.now()},4:{count:1,lastDay:Date.now()}},
+  myCourses:[1,4,6],currentCourseId:null,currentLessonIndex:0,
+  pvpWins:0,pvpLosses:0,pvpLP:40,pvpPeakLP:40,pvpSeason:1,
+  pvpSeasonEnd:Date.now()+30*86400000,
+  tournamentJoined:false,tournamentActive:false,tournamentRound:0,
+  casesOpened:0,caseHistory:[],
+  clan:null,
+  clanQuests:[
+    {id:'cq1',title:'Клан: победите 5 раз в PvP',progress:0,target:5,reward:200},
+    {id:'cq2',title:'Клан: внесите 3000 V в войну',progress:0,target:3000,reward:150},
+    {id:'cq3',title:'Клан: отправьте 20 сообщений',progress:0,target:20,reward:100}
+  ],
+  seasonXP:0,seasonLevel:1,premiumPass:false,bpClaimed:[],
+  selectedGoal:null,trajectoryProgress:[],
+  xpBoostUntil:0,coinBoostUntil:0,
+  musicPlaying:false,
+  customCourses:[],
+  editingCourse:null,
+  editingLessonIndex:-1
+};
+
+/* ==================== SKINS ==================== */
+const skins={
+  base:[
+    {id:'base-1',icon:'🧑‍🎓',name:'Студент',price:0,rarity:'common'},
+    {id:'base-2',icon:'🧑‍💻',name:'Кодер',price:200,rarity:'rare'},
+    {id:'base-3',icon:'🦸',name:'Герой',price:800,rarity:'epic'},
+    {id:'base-4',icon:'🧙',name:'Маг',price:1200,rarity:'epic'},
+    {id:'base-5',icon:'🤖',name:'Робот',price:900,rarity:'rare'},
+    {id:'base-6',icon:'👽',name:'Пришелец',price:700,rarity:'rare'},
+    {id:'base-7',icon:'🐺',name:'Волк',price:1500,rarity:'legendary'},
+    {id:'base-8',icon:'🐉',name:'Дракон',price:2500,rarity:'mythic'}
+  ],
+  hat:[
+    {id:'hat-1',icon:'🧢',name:'Кепка',price:300,rarity:'common'},
+    {id:'hat-2',icon:'🎩',name:'Цилиндр',price:500,rarity:'rare'},
+    {id:'hat-3',icon:'🎓',name:'Выпускник',price:800,rarity:'rare'},
+    {id:'hat-4',icon:'👑',name:'Корона',price:2000,rarity:'mythic'},
+    {id:'hat-5',icon:'🪖',name:'Каска',price:400,rarity:'common'}
+  ],
+  glasses:[
+    {id:'gl-1',icon:'👓',name:'Учёный',price:250,rarity:'common'},
+    {id:'gl-2',icon:'🕶️',name:'Тёмные',price:400,rarity:'rare'},
+    {id:'gl-3',icon:'🥽',name:'VR',price:1200,rarity:'epic'}
+  ],
+  bg:[
+    {id:'bg-1',icon:'🌌',name:'Космос',price:0,rarity:'common'},
+    {id:'bg-2',icon:'🌅',name:'Закат',price:400,rarity:'rare'},
+    {id:'bg-3',icon:'🌊',name:'Океан',price:400,rarity:'rare'},
+    {id:'bg-4',icon:'🏙️',name:'Неон',price:900,rarity:'epic'},
+    {id:'bg-5',icon:'🌈',name:'Радуга',price:600,rarity:'epic'},
+    {id:'bg-6',icon:'🔥',name:'Лава',price:1100,rarity:'legendary'}
+  ],
+  pet:[
+    {id:'pet-1',icon:'🐱',name:'Кот',price:700,rarity:'rare'},
+    {id:'pet-2',icon:'🦊',name:'Лис',price:900,rarity:'epic'},
+    {id:'pet-4',icon:'🐉',name:'Дракончик',price:2500,rarity:'mythic'}
+  ],
+  aura:[
+    {id:'aura-1',icon:'✨',name:'Искры',price:1000,rarity:'rare'},
+    {id:'aura-2',icon:'🔥',name:'Огонь',price:1800,rarity:'legendary'},
+    {id:'aura-3',icon:'❄️',name:'Лёд',price:1200,rarity:'epic'}
+  ]
+};
+const allSkins=Object.entries(skins).flatMap(([slot,arr])=>arr.map(s=>({...s,slot})));
+const bgGradients={'bg-1':'radial-gradient(ellipse at 50% 100%,#4c1d95 0%,#1e1b4b 40%,#0f0e1a 100%)','bg-2':'linear-gradient(135deg,#f59e0b,#ef4444,#7c2d12)','bg-3':'linear-gradient(135deg,#06b6d4,#1e40af,#0f172a)','bg-4':'linear-gradient(135deg,#ec4899,#8b5cf6,#06b6d4)','bg-5':'linear-gradient(135deg,#ef4444,#f59e0b,#10b981,#06b6d4)','bg-6':'radial-gradient(circle,#7f1d1d,#1c1917)'};
+const leaderboardData=[{name:'Мария К.',coins:4890,avatar:'🦸'},{name:'Иван П.',coins:4210,avatar:'🧙'},{name:'Ольга С.',coins:3870,avatar:'🐉'},{name:'Дмитрий Р.',coins:3540,avatar:'🤖'},{name:'Анна В.',coins:3220,avatar:'👽'},{name:'Вы',coins:1250,avatar:'🧑‍🎓',me:true},{name:'Сергей Т.',coins:1180,avatar:'🐺'},{name:'Ника Л.',coins:940,avatar:'🐱'},{name:'Пётр М.',coins:810,avatar:'🦊'},{name:'Кирилл С.',coins:690,avatar:'🐧'}];
+
+/* ==================== COURSES ==================== */
+const courses=[
+  {id:1,title:'Введение в Arduino и электронику',desc:'Собери первую схему.',icon:'⚡',cover:'linear-gradient(135deg,#f59e0b,#ef4444)',category:'electronics',level:'Начинающий',duration:'12 ч',students:4821,rating:4.9,price:'Бесплатно',free:true,ai:true,
+    lessons:[
+      {id:1,title:'Что такое Arduino?',type:'theory',duration:'8 мин',content:`<p><strong>Arduino</strong> — платформа для электроники. Скетч: <code>setup()</code> и <code>loop()</code>.</p>`},
+      {id:2,title:'Обзор платы',type:'video',duration:'12 мин'},
+      {id:3,title:'Мигание LED',type:'code',duration:'15 мин',
+        content:`<p>Реализуй функцию <code>blink(times)</code> — массив из "on"/"off" по очереди.</p>`,
+        starter:`function blink(times) {\n  const result = [];\n  // Твой код\n  \n  return result;\n}\n\n__exports__.blink = blink;\nconsole.log(blink(4));`,
+        tests:[
+          { name: 'blink объявлена', check: 'typeof __exports__.blink === "function"' },
+          { name: 'blink(2) = ["on","off"]', check: 'JSON.stringify(__exports__.blink(2)) === JSON.stringify(["on","off"])' },
+          { name: 'blink(5) → 5 элементов', check: '__exports__.blink(5).length === 5' }
+        ]},
+      {id:4,title:'Проверь себя',type:'quiz',duration:'5 мин',questions:[{q:'Язык в Arduino IDE?',options:['Python','C++','JS'],correct:1},{q:'Сколько раз setup()?',options:['Один','∞','Раз в сек'],correct:0}]},
+      {id:5,title:'Резисторы',type:'theory',duration:'10 мин',content:`<p>Закон Ома: <code>I = U / R</code>.</p>`},
+      {id:6,title:'Практика в Circuit',type:'circuit',duration:'25 мин',description:'Собери схему.'}
+    ]},
+  {id:2,title:'3D-моделирование',desc:'CAD, STL.',icon:'🧊',cover:'linear-gradient(135deg,#06b6d4,#3b82f6)',category:'3d',level:'Средний',duration:'18 ч',students:2143,rating:4.7,price:'₽ 2 990',free:false,ai:true,
+    lessons:[{id:1,title:'Интерфейс',type:'video',duration:'14 мин'},{id:2,title:'Примитивы',type:'theory',duration:'12 мин',content:`<p>Куб, сфера, цилиндр.</p>`},{id:3,title:'3D-практика',type:'cad',duration:'30 мин',description:'Смоделируй корпус.'}]},
+  {id:3,title:'Python для анализа',desc:'Pandas, NumPy.',icon:'🐍',cover:'linear-gradient(135deg,#10b981,#059669)',category:'data',level:'Начинающий',duration:'24 ч',students:8934,rating:4.8,price:'₽ 4 490',free:false,ai:true,
+    lessons:[{id:1,title:'Первый код',type:'video',duration:'10 мин'},{id:2,title:'Pandas',type:'theory',duration:'22 мин',content:`<p><strong>Pandas</strong> — таблицы.</p>`},{id:3,title:'Анализ массива',type:'code',duration:'25 мин',
+      content:`<p>Функция <code>analyze(arr)</code> возвращает {sum, avg, max, min}.</p>`,
+      starter:`function analyze(arr) {\n  let sum = 0, max = -Infinity, min = Infinity;\n  // Твой код\n  \n  return { sum, avg: sum/arr.length, max, min };\n}\n\n__exports__.analyze = analyze;\nconsole.log(analyze([3, 7, 1, 9]));`,
+      tests:[
+        { name: 'sum = 15', check: '__exports__.analyze([1,2,3,4,5]).sum === 15' },
+        { name: 'avg = 3', check: '__exports__.analyze([1,2,3,4,5]).avg === 3' },
+        { name: 'max = 9', check: '__exports__.analyze([3,7,1,9,5]).max === 9' },
+        { name: 'min = 1', check: '__exports__.analyze([3,7,1,9,5]).min === 1' }
+      ]}]},
+  {id:4,title:'Схемотехника',desc:'Теория и практика.',icon:'🔌',cover:'linear-gradient(135deg,#8b5cf6,#6366f1)',category:'electronics',level:'Средний',duration:'16 ч',students:1523,rating:4.6,price:'Бесплатно',free:true,ai:true,
+    lessons:[{id:1,title:'Закон Ома',type:'theory',duration:'10 мин',content:`<p><code>U = I × R</code>.</p>`},{id:2,title:'Circuit',type:'circuit',duration:'28 мин',description:'Собери цепь.'}]},
+  {id:5,title:'Основы C++',desc:'Синтаксис, циклы.',icon:'⚙️',cover:'linear-gradient(135deg,#6366f1,#8b5cf6)',category:'programming',level:'Начинающий',duration:'20 ч',students:6217,rating:4.9,price:'₽ 3 490',free:false,ai:true,
+    lessons:[
+      {id:1,title:'Компиляция',type:'video',duration:'12 мин'},
+      {id:2,title:'Циклы',type:'code',duration:'25 мин',
+        content:`<p>Реализуй <code>sumTo(n)</code> — сумму от 1 до n.</p>`,
+        starter:`function sumTo(n) {\n  let sum = 0;\n  // Твой код\n  \n  return sum;\n}\n\n__exports__.sumTo = sumTo;\nconsole.log(sumTo(5));`,
+        tests:[
+          { name: 'sumTo(1) = 1', check: '__exports__.sumTo(1) === 1' },
+          { name: 'sumTo(5) = 15', check: '__exports__.sumTo(5) === 15' },
+          { name: 'sumTo(100) = 5050', check: '__exports__.sumTo(100) === 5050' }
+        ]}
+    ]},
+  {id:6,title:'AI для образования',desc:'LLM и промпты.',icon:'🤖',cover:'linear-gradient(135deg,#ec4899,#8b5cf6)',category:'data',level:'Средний',duration:'14 ч',students:3421,rating:4.8,price:'Бесплатно',free:true,ai:true,
+    lessons:[{id:1,title:'Что такое LLM',type:'theory',duration:'10 мин',content:`<p><strong>LLM</strong> — языковая модель.</p>`},{id:2,title:'Промпты',type:'video',duration:'18 мин'}]}
+];
+
+function loadCustomCourses(){try{const r=localStorage.getItem('voxel_custom_courses');if(r)state.customCourses=JSON.parse(r);}catch(e){}}
+function saveCustomCourses(){try{localStorage.setItem('voxel_custom_courses',JSON.stringify(state.customCourses));}catch(e){showToast('❌','Ошибка сохранения','');}}
+function getAllCourses(){return [...courses,...state.customCourses];}
+function getCourse(id){return courses.find(c=>c.id===id)||state.customCourses.find(c=>c.id===id);}
+function isCustomCourse(id){return state.customCourses.some(c=>c.id===id);}
+
+/* ==================== AUDIO ==================== */
+let audioCtx;
+function initAudio(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();}
+function playTone(freq,dur=.15,type='sine',vol=.06){try{initAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur);}catch(e){}}
+function soundCoin(){playTone(1400,.1,'sine',.05);setTimeout(()=>playTone(1800,.12,'sine',.05),70);}
+function soundReward(){[659,784,988,1318].forEach((f,i)=>setTimeout(()=>playTone(f,.2,'sine',.05),i*90));}
+function soundLevelUp(){[659,784,988,1318,1568].forEach((f,i)=>setTimeout(()=>playTone(f,.25,'sine',.06),i*100));}
+function soundError(){playTone(180,.2,'sine',.05);}
+function soundChest(){[400,600,800,1000].forEach((f,i)=>setTimeout(()=>playTone(f,.15,'sine',.05),i*70));}
+function soundComplete(){[659,988,1318].forEach((f,i)=>setTimeout(()=>playTone(f,.3,'sine',.06),i*120));}
+function soundVS(){playTone(200,.3,'sine',.05);setTimeout(()=>playTone(280,.3,'sine',.05),300);}
+function soundCaseOpen(){[300,400,500,600].forEach((f,i)=>setTimeout(()=>playTone(f,.12,'sine',.04),i*50));}
+function soundCraft(){[523,659,784,1046].forEach((f,i)=>setTimeout(()=>playTone(f,.2,'sine',.05),i*80));}
+
+let musicNodes=[],musicGain=null;
+function startMusic(){
+  initAudio();if(state.musicPlaying)return;
+  musicGain=audioCtx.createGain();musicGain.gain.value=0.012;musicGain.connect(audioCtx.destination);
+  const pad=[130.81,196.00,261.63];
+  pad.forEach((f,i)=>{
+    const osc=audioCtx.createOscillator();osc.type='sine';osc.frequency.value=f;
+    const g=audioCtx.createGain();g.gain.value=0.2;
+    const lfo=audioCtx.createOscillator();lfo.type='sine';lfo.frequency.value=0.02+i*0.01;
+    const lfoG=audioCtx.createGain();lfoG.gain.value=0.15;
+    lfo.connect(lfoG);lfoG.connect(g.gain);osc.connect(g);g.connect(musicGain);
+    osc.start();lfo.start();musicNodes.push({osc,g,lfo});
+  });
+  const scale=[261.63,293.66,329.63,392.00,440.00,523.25,587.33,659.25];
+  const playNote=()=>{
+    if(!state.musicPlaying)return;
+    const n=scale[Math.floor(Math.random()*scale.length)];
+    const o=audioCtx.createOscillator();o.type='sine';o.frequency.value=n;
+    const g=audioCtx.createGain();const t=audioCtx.currentTime;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.035,t+0.8);
+    g.gain.linearRampToValueAtTime(0.02,t+2.0);g.gain.exponentialRampToValueAtTime(0.001,t+4.5);
+    o.connect(g);g.connect(musicGain);o.start();o.stop(t+5);
+  };
+  musicNodes.noteTimer=setInterval(()=>{if(state.musicPlaying&&Math.random()<0.55)playNote();},3000);
+  state.musicPlaying=true;$('musicBtn').classList.add('active');
+}
+function stopMusic(){if(!state.musicPlaying)return;musicNodes.forEach(n=>{try{n.osc.stop();n.lfo&&n.lfo.stop();}catch(e){}});if(musicNodes.noteTimer)clearInterval(musicNodes.noteTimer);musicNodes=[];state.musicPlaying=false;$('musicBtn').classList.remove('active');}
+function toggleMusic(){if(state.musicPlaying){stopMusic();showToast('🔇','Музыка выключена','');}else{startMusic();showToast('🎵','Музыка включена','');}}
+
+/* ==================== HELPERS ==================== */
+const $=id=>document.getElementById(id);
+const formatNum=n=>n.toLocaleString('ru').replace(/,/g,' ');
+function showToast(icon,title,desc,dur=3200){
+  const t=document.createElement('div');t.className='toast';
+  t.innerHTML=`<div class="toast-icon">${icon}</div><div><div class="toast-title">${title}</div><div class="toast-desc">${desc}</div></div>`;
+  $('toasts').appendChild(t);
+  setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),400);},dur);
+}
+function floatReward(text,x,y){const el=document.createElement('div');el.className='float-reward';el.textContent=text;el.style.left=x+'px';el.style.top=y+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),1600);}
+function confetti(count=60,gold=false){
+  const colors=gold?['#fbbf24','#fef3c7','#d97706','#f59e0b']:['#7c3aed','#06b6d4','#fbbf24','#10b981','#ec4899'];
+  for(let i=0;i<count;i++){
+    const c=document.createElement('div');c.className='confetti';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.left=Math.random()*100+'vw';
+    c.style.width=c.style.height=(6+Math.random()*10)+'px';
+    c.style.borderRadius=Math.random()>.5?'50%':'2px';
+    c.style.animation=`confettiFall ${2+Math.random()*2}s linear ${Math.random()*.5}s forwards`;
+    document.body.appendChild(c);setTimeout(()=>c.remove(),4500);
+  }
+}
+function showModal(html){$('modalBox').innerHTML=html;$('modalBg').classList.add('show');}
+function closeModal(){$('modalBg').classList.remove('show');}
+
+/* ==================== DIVISIONS ==================== */
+const DIVISIONS=[
+  {name:'Бронза III',min:0,icon:'🥉',color:'#a16207'},{name:'Бронза II',min:100,icon:'🥉',color:'#a16207'},{name:'Бронза I',min:200,icon:'🥉',color:'#a16207'},
+  {name:'Серебро III',min:350,icon:'🥈',color:'#94a3b8'},{name:'Серебро II',min:500,icon:'🥈',color:'#94a3b8'},{name:'Серебро I',min:650,icon:'🥈',color:'#94a3b8'},
+  {name:'Золото III',min:850,icon:'🥇',color:'#fbbf24'},{name:'Золото II',min:1050,icon:'🥇',color:'#fbbf24'},{name:'Золото I',min:1250,icon:'🥇',color:'#fbbf24'},
+  {name:'Платина',min:1500,icon:'💎',color:'#06b6d4'},{name:'Алмаз',min:1800,icon:'💠',color:'#a855f7'},{name:'Легенда',min:2200,icon:'👑',color:'#ef4444'}
+];
+function getDivision(lp){let d=DIVISIONS[0];for(const x of DIVISIONS){if(lp>=x.min)d=x;else break;}return d;}
+function getNextDiv(lp){for(const x of DIVISIONS){if(lp<x.min)return x;}return null;}
+function renderDivision(){
+  const cur=getDivision(state.pvpLP),next=getNextDiv(state.pvpLP);
+  const curIdx=DIVISIONS.indexOf(cur);
+  const startLP=cur.min,endLP=next?next.min:cur.min+300;
+  const pct=Math.min(100,((state.pvpLP-startLP)/(endLP-startLP))*100);
+  $('divisionDisplay').innerHTML=`<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+    <div class="division-badge" style="border-color:${cur.color};color:${cur.color};"><div class="div-icon">${cur.icon}</div>
+      <div><div style="font-size:11px;color:var(--text-muted);">ДИВИЗИОН</div><div>${cur.name}</div></div></div>
+    <div style="flex:1;min-width:140px;"><div style="font-size:11px;color:var(--text-muted);">LP</div>
+      <div style="font-size:24px;font-weight:900;color:var(--gold);">${state.pvpLP}</div></div></div>`;
+  $('lpFill').style.width=pct+'%';
+  $('lpText').textContent=`${state.pvpLP-startLP} / ${endLP-startLP}`;
+  $('lpNext').textContent=next?`До ${next.name}: ${next.min-state.pvpLP}`:'Максимум!';
+  $('divisionLadder').innerHTML=DIVISIONS.map((d,i)=>{
+    let cls='div-node';if(i===curIdx)cls+=' current';else if(i<curIdx)cls+=' passed';
+    return `<div class="${cls}" style="border-color:${d.color}"><div class="div-em">${d.icon}</div><div class="div-nm" style="color:${d.color}">${d.name}</div><div class="div-lp">${d.min}+ LP</div></div>`;
+  }).join('');
+}
+function addLP(amount){
+  state.pvpLP=Math.max(0,state.pvpLP+amount);
+  if(state.pvpLP>state.pvpPeakLP)state.pvpPeakLP=state.pvpLP;
+  const div=getDivision(state.pvpLP);
+  if(div.name.includes('Золото')||div.name.includes('Платина')||div.name.includes('Алмаз')||div.name.includes('Легенда')){
+    const a=state.achievements.find(x=>x.id==='a15');if(a&&!a.unlocked){a.unlocked=true;showToast('🏆','Достижение!','Золото+ в PvP');soundReward();}
+  }
+  if(div.name==='Легенда'){const a=state.achievements.find(x=>x.id==='a16');if(a&&!a.unlocked){a.unlocked=true;showToast('🏆','Достижение!','Легенда!');soundReward();}}
+  renderDivision();renderAchievements();
+}
+setInterval(()=>{
+  const d=state.pvpSeasonEnd-Date.now();
+  if(d<=0)return;
+  const days=Math.floor(d/86400000),h=Math.floor((d%86400000)/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);
+  const el=$('seasonResetCountdown');
+  if(el)el.textContent=`${days} дн ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+},1000);
+
+/* ==================== CLAN QUESTS ==================== */
+function renderClanQuests(){
+  if(!state.clan)return;
+  const done=state.clanQuests.filter(q=>q.progress>=q.target).length;
+  $('clanQuestsProgress').textContent=`${done}/3`;
+  $('clanQuestsList').innerHTML=state.clanQuests.map(q=>{
+    const isDone=q.progress>=q.target;
+    const pct=Math.min(100,(q.progress/q.target)*100);
+    return `<div class="quest clan ${isDone?'done':''}"><h4>${q.title} <span class="reward">+${q.reward}V</span></h4>
+      <div style="font-size:10px;color:var(--text-muted);">${q.progress}/${q.target}</div>
+      <div class="bar"><div style="width:${pct}%"></div></div></div>`;
+  }).join('');
+}
+function updateClanQuest(id,amount){
+  const q=state.clanQuests.find(x=>x.id===id);if(!q||q.progress>=q.target)return;
+  q.progress=Math.min(q.target,q.progress+amount);
+  if(q.progress>=q.target){state.coins+=q.reward;addXP(50);showToast('🎉','Клановый квест!',q.title);soundReward();confetti(60,true);renderTop();}
+  renderClanQuests();
+}
+
+/* ==================== RENDER TOP ==================== */
+function renderTop(){
+  $('coinBalance').textContent=formatNum(state.coins);
+  $('shopBalance').textContent='V '+formatNum(state.coins);
+  $('streakCount').textContent=state.streak;
+  $('lvlBadge').textContent=state.level;
+  $('xpValue').textContent=`${state.xp}/${state.xpPerLevel}`;
+  const c=75.4;$('xpCircle').style.strokeDashoffset=c-(state.xp/state.xpPerLevel)*c;
+  updateLobbyStats();
+}
+function renderAvatar(){
+  const eq=state.equipped;
+  const base=allSkins.find(s=>s.id===eq.base);
+  $('topAvatar').textContent=base?base.icon:'🧑‍🎓';
+  applyCharacterSkin();
+}
+function renderSlotTabs(){
+  document.querySelectorAll('.slot-tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      document.querySelectorAll('.slot-tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');state.activeSlot=t.dataset.slot;renderItems();
+    });
+  });
+}
+function renderItems(){
+  const slot=state.activeSlot;
+  $('itemsGrid').innerHTML=skins[slot].map(item=>{
+    const owned=state.inventory.includes(item.id);
+    const eq=state.equipped[slot]===item.id;
+    const dup=state.duplicates[item.id]||0;
+    const cls=['skin-item','r-'+(item.rarity||'common')];
+    if(owned)cls.push('owned');if(eq)cls.push('equipped');if(!owned&&item.price>0)cls.push('locked');
+    let b='';
+    if(!owned&&item.price>0)b=`<div class="price-tag">${item.price}V</div>`;
+    if(eq)b=`<div class="equip-mark">✓</div>`;
+    if(dup>0)b+=`<div class="dup-badge">x${dup}</div>`;
+    return `<div class="${cls.join(' ')}" onclick="clickSkin('${slot}','${item.id}')" title="${item.name}">${item.icon}${b}</div>`;
+  }).join('');
+}
+function renderStreak(){
+  const icons=['🌱','🎁','💰','💎','🔥','👑','🏆'];
+  const rewards=['+30V','+50V','+80V','+120V','+200V','+300V','+500V'];
+  $('streakCalendar').innerHTML=icons.map((icon,i)=>{
+    const d=i+1,claimed=state.streakClaimed.includes(d),today=d===state.streak;
+    let cls='day-cell';if(claimed)cls+=' claimed';else if(today)cls+=' today';
+    return `<div class="${cls}"><div class="day-icon">${icon}</div><div>Д${d}</div><div class="reward">${rewards[i]}</div></div>`;
+  }).join('');
+  const can=!state.streakClaimed.includes(state.streak);
+  $('claimStreakBtn').disabled=!can;
+  $('claimStreakBtn').textContent=can?`🎁 Забрать награду дня ${state.streak}`:'✅ Получена';
+}
+function generateAIQuests(){
+  const pool=[
+    {id:'q1',title:'Пройди 2 урока',progress:0,target:2,reward:80,xp:40,ai:true},
+    {id:'q2',title:'Пройди код-тест',progress:0,target:1,reward:60,xp:30,ai:true},
+    {id:'q3',title:'10 минут в Circuit',progress:0,target:10,reward:100,xp:50,ai:true},
+    {id:'q4',title:'Победи в PvP',progress:0,target:1,reward:120,xp:60,ai:true},
+    {id:'q6',title:'Открой сундук',progress:0,target:1,reward:40,xp:20,ai:true},
+    {id:'q7',title:'Создай свой курс',progress:0,target:1,reward:150,xp:80,ai:true},
+    {id:'q8',title:'Сообщение в клан',progress:0,target:1,reward:50,xp:25,ai:true}
+  ];
+  state.quests=[...pool].sort(()=>Math.random()-.5).slice(0,3);
+}
+function updateQuestProgress(id,amount=1){
+  const q=state.quests.find(x=>x.id===id);if(!q)return;
+  q.progress=Math.min(q.target,q.progress+amount);
+  if(q.progress>=q.target&&!q.claimed){q.claimed=true;addCoins(q.reward);addXP(q.xp);showToast('🎯','Квест!',`${q.title} → +${q.reward}V`);confetti(30);}
+  renderQuests();
+}
+function renderQuests(){
+  $('questsList').innerHTML=state.quests.map(q=>{
+    const done=q.progress>=q.target;
+    const pct=Math.min(100,(q.progress/q.target)*100);
+    return `<div class="quest ${done?'done':''} ${q.ai?'ai':''}"><h4>${q.title} <span class="reward">+${q.reward}V</span></h4>
+      <div style="font-size:10px;color:var(--text-muted);">${q.progress}/${q.target} • +${q.xp} XP</div>
+      <div class="bar"><div style="width:${pct}%"></div></div></div>`;
+  }).join('');
+  $('questsDone').textContent=`${state.quests.filter(q=>q.progress>=q.target).length}/${state.quests.length}`;
+}
+function renderAchievements(){
+  $('achGrid').innerHTML=state.achievements.map(a=>`
+    <div class="ach ${a.unlocked?'unlocked':'locked'}" onclick="showAchInfo('${a.id}')"><div class="ach-icon">${a.icon}</div><div>${a.name}</div></div>`).join('');
+  $('achDone').textContent=`${state.achievements.filter(a=>a.unlocked).length}/${state.achievements.length}`;
+}
+function showAchInfo(id){
+  const a=state.achievements.find(x=>x.id===id);if(!a)return;
+  showModal(`<div class="big-icon">${a.unlocked?a.icon:'🔒'}</div><h2>${a.name}</h2><p>${a.desc}</p>
+    <div class="reward-show" style="${!a.unlocked?'color:var(--text-muted)':''}">${a.unlocked?'✅ Получено':'🔒 Заблокировано'}</div>
+    <button class="btn ${a.unlocked?'btn-gold':'btn-primary'} btn-full" onclick="closeModal()">Ок</button>`);
+}
+function renderLeaderboard(){
+  const sorted=[...leaderboardData].map(r=>r.me?{...r,coins:state.coins,avatar:$('topAvatar').textContent}:r);
+  sorted.sort((a,b)=>b.coins-a.coins);
+  $('leaderboard').innerHTML=sorted.slice(0,10).map((row,i)=>{
+    const rank=i+1,cls=rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
+    return `<div class="lb-row ${row.me?'me':''}"><div class="lb-rank ${cls}">${rank}</div><div style="font-size:16px;">${row.avatar}</div>
+      <div class="lb-name">${row.name}${row.me?' (вы)':''}</div><div class="lb-coins">V ${formatNum(row.coins)}</div></div>`;
+  }).join('');
+}
+function renderCourseStreaks(){
+  const e=Object.entries(state.courseStreaks);
+  if(!e.length){$('courseStreaks').innerHTML='<p style="color:var(--text-muted);font-size:12px;">Нет стриков.</p>';return;}
+  $('courseStreaks').innerHTML=e.map(([cid,data])=>{
+    const c=getCourse(parseInt(cid));if(!c)return '';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface-2);border-radius:9px;margin-bottom:6px;">
+      <div style="font-size:20px;">${c.icon}</div><div style="flex:1;"><div style="font-weight:700;font-size:12px;">${c.title.substring(0,25)}...</div></div>
+      <div style="color:#ef4444;font-weight:900;">🔥${data.count}</div></div>`;
+  }).join('');
+}
+function renderShop(){
+  let html='';
+  const names={base:'Персонаж',hat:'Шляпа',glasses:'Очки',bg:'Фон',pet:'Питомец',aura:'Аура'};
+  Object.entries(skins).forEach(([slot,items])=>{
+    html+=`<div class="section-title">${names[slot]}</div>`;
+    items.forEach(item=>{
+      const owned=state.inventory.includes(item.id),eq=state.equipped[slot]===item.id;
+      let btn;
+      if(eq)btn=`<button class="buy-btn equipped">Надето</button>`;
+      else if(owned)btn=`<button class="buy-btn owned" onclick="equip('${slot}','${item.id}')">Надеть</button>`;
+      else btn=`<button class="buy-btn" onclick="buySkin('${slot}','${item.id}')">V ${item.price}</button>`;
+      html+=`<div class="shop-item"><div class="shop-icon">${item.icon}</div><div class="shop-info"><div class="name">${item.name} <span class="rarity-tag ${item.rarity}">${item.rarity}</span></div><div class="slot">${names[slot]}</div></div>${btn}</div>`;
+    });
+  });
+  $('shopContent').innerHTML=html;
+}
+function renderWheel(){
+  const wheel=$('wheel');
+  const segs=[
+    {label:'+50V',value:50,type:'coins',color:'#7c3aed'},{label:'+20V',value:20,type:'coins',color:'#06b6d4'},
+    {label:'XP',value:100,type:'xp',color:'#10b981'},{label:'+100V',value:100,type:'coins',color:'#f59e0b'},
+    {label:'Пусто',value:0,type:'empty',color:'#3a3560'},{label:'+200V',value:200,type:'coins',color:'#ec4899'},
+    {label:'+30V',value:30,type:'coins',color:'#8b5cf6'},{label:'Джекпот',value:500,type:'coins',color:'#ef4444'}
+  ];
+  const a=360/segs.length;
+  wheel.style.background=`conic-gradient(${segs.map((s,i)=>`${s.color} ${i*a}deg ${(i+1)*a}deg`).join(',')})`;
+  wheel.querySelectorAll('.seg').forEach(el=>el.remove());
+  segs.forEach((s,i)=>{
+    const angle=i*a+a/2,el=document.createElement('div');
+    el.className='seg';el.textContent=s.label;
+    const rad=(angle-90)*Math.PI/180,r=82;
+    el.style.transform=`translate(${Math.cos(rad)*r}px,${Math.sin(rad)*r}px) rotate(${angle}deg)`;
+    el.style.color='#fff';wheel.appendChild(el);
+  });
+  wheel.dataset.segments=JSON.stringify(segs);
+}
+function addCoins(amount,x,y){
+  if(amount<=0)return;
+  const mult=Date.now()<state.coinBoostUntil?1.5:1;
+  const f=Math.round(amount*mult);
+  state.coins+=f;renderTop();renderLeaderboard();soundCoin();
+  if(x&&y)floatReward(`+${f} V`,x-30,y-20);
+}
+function addXP(amount){
+  const mult=Date.now()<state.xpBoostUntil?2:1;
+  const f=Math.round(amount*mult);
+  state.xp+=f;state.seasonXP+=f;
+  let lvl=false;
+  while(state.xp>=state.xpPerLevel){state.xp-=state.xpPerLevel;state.level++;lvl=true;state.xpPerLevel=Math.round(state.xpPerLevel*1.2);}
+  renderTop();if(lvl)levelUp();checkSeasonLevel();
+}
+function levelUp(){soundLevelUp();confetti(80,true);showModal(`<div class="big-icon">🏆</div><h2>Уровень ${state.level}!</h2><div class="reward-show">+250 V</div><button class="btn btn-gold btn-full" onclick="closeModal()">🚀</button>`);state.coins+=250;renderTop();renderLeaderboard();}
+function clickSkin(slot,id){
+  const item=skins[slot].find(s=>s.id===id);if(!item)return;
+  const owned=state.inventory.includes(id);
+  if(!owned){
+    if(item.price===0){state.inventory.push(id);equip(slot,id);return;}
+    if(state.coins>=item.price){if(confirm(`Купить «${item.name}» за ${item.price} V?`))buySkin(slot,id);}
+    else{soundError();showToast('❌','Мало V','');}
+    return;
+  }
+  equip(slot,id);
+}
+function buySkin(slot,id){
+  const item=skins[slot].find(s=>s.id===id);
+  if(state.coins<item.price){soundError();showToast('❌','Мало V','');return;}
+  state.coins-=item.price;state.inventory.push(id);equip(slot,id);
+  soundReward();confetti(30,true);showToast('🛒','Куплено!',item.name);
+  renderTop();renderShop();renderLeaderboard();checkAchievements();
+}
+function equip(slot,id){state.equipped[slot]=id;renderAvatar();renderItems();renderShop();playTone(800,.1,'sine',.04);}
+function checkAchievements(){
+  const un=(id,c)=>{const a=state.achievements.find(x=>x.id===id);if(a&&!a.unlocked&&c){a.unlocked=true;showToast('🏆','Достижение!',a.name);soundReward();}};
+  un('a3',state.coins>=1000);un('a5',state.level>=10);un('a6',state.inventory.length>=5);
+  un('a7',state.pvpWins>=5);un('a8',state.seasonLevel>=10);un('a9',state.trajectoryProgress.length>=5);
+  un('a10',!!state.clan);un('a12',state.casesOpened>=10);un('a13',state.craftHistory.length>=10);un('a17',state.customCourses.length>0);
+  const hasM=state.inventory.some(id=>{const s=allSkins.find(x=>x.id===id);return s&&s.rarity==='mythic';});un('a14',hasM);
+  renderAchievements();
+}
+function claimDaily(){
+  if(state.streakClaimed.includes(state.streak)){showToast('⏳','Уже','Завтра');return;}
+  const r=[30,50,80,120,200,300,500][state.streak-1]||100;
+  state.streakClaimed.push(state.streak);addCoins(r);addXP(Math.round(r/2));soundReward();confetti(50,true);
+  showToast('🔥',`День ${state.streak}!`,`+${r} V`);renderStreak();
+}
+function spinWheel(){
+  if(state.spinUsed){soundError();showToast('⏳','Уже','Завтра');return;}
+  const wheel=$('wheel'),segs=JSON.parse(wheel.dataset.segments);
+  const w=Math.floor(Math.random()*segs.length),a=360/segs.length;
+  wheel.style.transform=`rotate(${-(w*a+a/2)+360*6}deg)`;
+  state.spinUsed=true;$('spinBtn').disabled=true;$('spinBtn').textContent='✅';
+  setTimeout(()=>{
+    const s=segs[w];
+    if(s.type==='coins'){addCoins(s.value);confetti(60,true);showModal(`<div class="big-icon">🎉</div><h2>${s.label}!</h2><div class="reward-show">+${s.value} V</div><button class="btn btn-gold btn-full" onclick="closeModal()">Забрать</button>`);}
+    else if(s.type==='xp'){addXP(s.value);confetti(60,true);showModal(`<div class="big-icon">⚡</div><h2>XP!</h2><div class="reward-show">+${s.value} XP</div><button class="btn btn-gold btn-full" onclick="closeModal()">Забрать</button>`);}
+    else{showModal(`<div class="big-icon">😔</div><h2>Пусто</h2><button class="btn btn-primary btn-full" onclick="closeModal()">Ок</button>`);}
+  },5200);
+}
+function openChest(){
+  if(state.chestOpened){soundError();showToast('⏳','Уже','Завтра');return;}
+  if(state.coins<30){soundError();showToast('❌','Мало V','30 V');return;}
+  state.coins-=30;state.chestOpened=true;renderTop();
+  const c=$('chest');c.classList.add('opening');
+  setTimeout(()=>{
+    c.classList.remove('opening');c.textContent='📦';
+    const rolls=[
+      {icon:'💰',name:'+150 V',type:'coins',value:150,w:40},{icon:'💎',name:'+500 V',type:'coins',value:500,w:20},
+      {icon:'⚡',name:'+80 XP',type:'xp',value:80,w:25},{icon:'👑',name:'Корона!',type:'skin',value:'hat-4',w:5},
+      {icon:'🐉',name:'Дракончик!',type:'skin',value:'pet-4',w:5},{icon:'🔥',name:'Аура!',type:'skin',value:'aura-2',w:5}
+    ];
+    const tot=rolls.reduce((a,b)=>a+b.w,0);let r=Math.random()*tot,p=rolls[0];
+    for(const roll of rolls){r-=roll.w;if(r<=0){p=roll;break;}}
+    soundChest();confetti(80,p.type==='skin');
+    if(p.type==='coins')addCoins(p.value);else if(p.type==='xp')addXP(p.value);else addSkinOrDuplicate(p.value);
+    checkAchievements();updateQuestProgress('q6');
+    showModal(`<div class="big-icon">${p.icon}</div><h2>${p.name}</h2><div class="reward-show">${p.type==='coins'?'+'+p.value+' V':p.type==='xp'?'+'+p.value+' XP':'НОВЫЙ СКИН'}</div><button class="btn btn-gold btn-full" onclick="closeModal()">🔥</button>`);
+  },1200);
+}
+function addSkinOrDuplicate(skinId){
+  if(state.inventory.includes(skinId)){state.duplicates[skinId]=(state.duplicates[skinId]||0)+1;showToast('♻️','Дубликат!','В Кузницу');}
+  else{state.inventory.push(skinId);}
+  renderItems();renderShop();
+}
+
+/* ==================== CATALOG ==================== */
+let currentFilter='all';
+function renderCatalog(){
+  const all=getAllCourses();
+  let f;
+  if(currentFilter==='all')f=all;
+  else if(currentFilter==='custom')f=state.customCourses;
+  else f=all.filter(c=>c.category===currentFilter);
+  $('catalogGrid').innerHTML=f.map(c=>{
+    const prog=state.courseProgress[c.id]||new Set();
+    const pct=Math.round((prog.size/c.lessons.length)*100);
+    const s=state.courseStreaks[c.id];
+    const custom=isCustomCourse(c.id);
+    return `<div class="course-card" onclick="openCourseDetail(${c.id})">
+      <div class="course-cover" style="background:${c.cover||'linear-gradient(135deg,#7c3aed,#06b6d4)'}">
+        ${c.icon||'📚'}${c.ai?'<div class="badge-ai">✨ AI</div>':''}
+        ${custom?'<div class="badge-ai" style="left:10px;right:auto;background:rgba(251,191,36,.9);color:#422006;">🛠️ Мой</div>':''}
+        ${pct===100?'<div class="badge-done">✓</div>':''}
+        ${s?`<div class="badge-streak">🔥 ${s.count}</div>`:''}
+      </div>
+      <div class="course-body"><h3>${c.title}</h3><p class="desc">${c.desc||''}</p>
+        <div class="course-meta"><span>📊 ${c.level||'—'}</span><span>⏱ ${c.duration||'—'}</span><span>📚 ${c.lessons.length}</span></div>
+        ${pct>0?`<div class="course-progress-bar"><div style="width:${pct}%"></div></div>`:''}
+        <div class="course-footer"><span class="stars">★ ${c.rating||'5.0'}</span><span class="price ${c.free?'free':''}">${custom?'Мой':(c.price||'Бесплатно')}</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+document.querySelectorAll('.filter-chips .chip').forEach(ch=>{
+  ch.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-chips .chip').forEach(x=>x.classList.remove('active'));
+    ch.classList.add('active');currentFilter=ch.dataset.filter;renderCatalog();
+  });
+});
+function openCourseDetail(id){
+  const c=getCourse(id);if(!c)return;
+  const prog=state.courseProgress[id]||new Set();
+  const done=prog.size,total=c.lessons.length,pct=Math.round((done/total)*100);
+  const s=state.courseStreaks[id];const custom=isCustomCourse(id);
+  $('courseDetail').innerHTML=`
+    <div class="course-hero">
+      <div><div style="font-size:11px;opacity:.7;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">${c.level||''} • ${c.duration||''} ${custom?'• 🛠️ Мой':''}</div>
+        <h1>${c.title}</h1><p class="lead">${c.desc||''}</p>
+        <div class="meta-row"><span>★ ${c.rating||'5.0'}</span><span>📚 ${total} уроков</span>${s?`<span style="color:#ef4444;font-weight:800;">🔥 ${s.count}</span>`:''}</div>
+      </div>
+      <div class="enroll-card">
+        <div class="enroll-cover" style="background:${c.cover||'linear-gradient(135deg,#7c3aed,#06b6d4)'}">${c.icon||'📚'}</div>
+        ${done>0?`<div style="font-size:11px;opacity:.85;margin-bottom:6px;">${pct}% (${done}/${total})</div><div class="progress-bar" style="background:rgba(255,255,255,.2);margin-bottom:12px;"><div style="width:${pct}%;background:#fbbf24;"></div></div><button class="btn btn-gold btn-full" onclick="startLearning(${id},0)">▶ Продолжить</button>`:`<button class="btn btn-gold btn-full" onclick="startLearning(${id},0)">▶ Начать</button>`}
+        <button class="btn btn-outline btn-full" style="margin-top:8px;border-color:rgba(255,255,255,.3);color:#fff;" onclick="toggleMyCourse(${id})">${state.myCourses.includes(id)?'✓ В моём обучении':'＋ Добавить'}</button>
+        ${custom?`<button class="btn btn-outline btn-full" style="margin-top:8px;border-color:rgba(255,255,255,.3);color:#fff;" onclick="showPage('constructor');editCustomCourse(${id})">🛠️ Редактировать</button>
+        <button class="btn btn-danger btn-full" style="margin-top:8px;" onclick="deleteCustomCourse(${id})">🗑 Удалить</button>`:''}
+      </div>
+    </div>
+    <h3 style="margin-bottom:10px;font-size:15px;font-weight:800;">📋 Программа</h3>
+    ${c.lessons.map((l,i)=>{
+      const isDone=prog.has(l.id);
+      const t={theory:'📖',video:'🎬',quiz:'📝',code:'💻',circuit:'🔌',cad:'🧊'}[l.type]||l.type;
+      return `<div class="module"><div class="module-header" onclick="startLearning(${id},${i})">
+        <span>${isDone?'✅':'○'} Урок ${i+1}: ${l.title}</span>
+        <span style="display:flex;gap:8px;align-items:center;"><span style="font-size:10px;color:var(--text-muted);">${l.duration||''}</span><span class="type-tag ${l.type}">${t}</span></span>
+      </div></div>`;
+    }).join('')}`;
+  showPage('course');
+}
+function toggleMyCourse(id){
+  const i=state.myCourses.indexOf(id);
+  if(i>=0)state.myCourses.splice(i,1);else state.myCourses.push(id);
+  showToast('📚',i>=0?'Удалён':'Добавлен',getCourse(id).title);openCourseDetail(id);
+}
+
+/* ==================== SANDBOX ==================== */
+async function runUserCode(code, tests) {
+  return new Promise((resolve) => {
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('sandbox', 'allow-scripts');
+    iframe.style.cssText='display:none;width:0;height:0;border:none';
+    const html = [
+      '<!DOCTYPE html><html><body><script>',
+      'var logs=[];',
+      'function fmt(v){if(v===null)return "null";if(v===undefined)return "undefined";if(typeof v==="object"){try{return JSON.stringify(v);}catch(e){return String(v);}}return String(v);}',
+      'console.log=function(){logs.push({type:"log",text:Array.prototype.slice.call(arguments).map(fmt).join(" ")});};',
+      'window.addEventListener("message",function(e){',
+      'if(!e.data||!e.data.__run)return;',
+      'var code=e.data.code,tests=e.data.tests||[];',
+      'var error=null,exports={};',
+      'try{var fn=new Function(code);fn();exports=(typeof globalThis.__exports__!=="undefined")?globalThis.__exports__:{};}catch(err){error=err.message;}',
+      'var results=tests.map(function(t){try{var fnT=new Function("__exports__","console","return ("+t.check+");");var passed=fnT(exports,console);return{name:t.name,pass:!!passed};}catch(err2){return{name:t.name,pass:false,error:err2.message};}});',
+      'parent.postMessage({__result:true,logs:logs,error:error,tests:results},"*");',
+      '});',
+      '<\\/script></body></html>'
+    ].join('\n');
+    const handler = (e) => {
+      if (!e.data || !e.data.__result) return;
+      window.removeEventListener('message', handler);
+      try { iframe.remove(); } catch (_) {}
+      resolve(e.data);
+    };
+    window.addEventListener('message', handler);
+    iframe.onload = () => {
+      try { iframe.contentWindow.postMessage({ __run: true, code, tests: tests || [] }, '*'); }
+      catch (err) { window.removeEventListener('message', handler); try { iframe.remove(); } catch (_) {} resolve({ logs: [], error: 'Sandbox: ' + err.message, tests: [] }); }
+    };
+    iframe.srcdoc = html;document.body.appendChild(iframe);
+    setTimeout(() => {
+      if (!document.body.contains(iframe)) return;
+      window.removeEventListener('message', handler);
+      try { iframe.remove(); } catch (_) {}
+      resolve({ logs: [], error: 'Таймаут', tests: [] });
+    }, 5000);
+  });
+}
+const codeStates = {};
+function resetCode(lessonId) {
+  const c = getCourse(state.currentCourseId);if (!c) return;
+  const l = c.lessons.find(x => x.id === lessonId);if (!l) return;
+  const area = $('codeArea-' + lessonId);if (area) area.value = l.starter || '';
+  const out = $('codeOutput-' + lessonId);if (out) out.style.display = 'none';
+  showToast('↺', 'Код сброшен', '');
+}
+async function runLessonCode(lessonId, checkMode) {
+  const c = getCourse(state.currentCourseId);if (!c) return;
+  const l = c.lessons.find(x => x.id === lessonId);if (!l) return;
+  const area = $('codeArea-' + lessonId),out = $('codeOutput-' + lessonId);
+  if (!area || !out) return;
+  const code = area.value.trim();
+  if (!code) { showToast('❌', 'Пусто', ''); return; }
+  out.style.display = 'block';
+  out.innerHTML = '<div style="color:var(--text-muted);font-size:12px;padding:12px;">⏳ Выполняем...</div>';
+  const tests = checkMode ? (l.tests || []) : [];
+  const res = await runUserCode(code, tests);
+  let html = '';
+  if (res.error) {
+    html += `<div style="background:rgba(239,68,68,.15);border-left:4px solid var(--danger);border-radius:0 8px 8px 0;padding:12px;margin-bottom:10px;">
+      <div style="color:var(--danger);font-weight:800;font-size:12px;margin-bottom:4px;">❌ Ошибка</div>
+      <div style="font-family:monospace;font-size:12px;color:#fca5a5;">${res.error.replace(/</g,'&lt;')}</div></div>`;
+  }
+  if (res.logs && res.logs.length) {
+    html += '<div style="font-size:11px;color:var(--text-muted);font-weight:800;text-transform:uppercase;margin-bottom:6px;">📟 Вывод</div>';
+    html += '<div style="background:#0a0a14;border-radius:8px;padding:10px;font-family:monospace;font-size:12px;margin-bottom:12px;max-height:200px;overflow-y:auto;">';
+    res.logs.forEach(lg => {
+      const color = lg.type === 'error' ? '#fca5a5' : '#a5f3fc';
+      html += `<div style="color:${color};padding:2px 0;border-bottom:1px solid #1a1830;">${lg.text.replace(/</g,'&lt;')}</div>`;
+    });
+    html += '</div>';
+  } else if (!res.error) { html += '<div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">📟 Консоль пуста</div>'; }
+  if (checkMode && res.tests && res.tests.length) {
+    const passed = res.tests.filter(t => t.pass).length;
+    const allPassed = passed === res.tests.length;
+    html += `<div style="font-size:11px;color:var(--text-muted);font-weight:800;text-transform:uppercase;margin-bottom:6px;">🧪 Тесты (${passed}/${res.tests.length})</div>`;
+    res.tests.forEach(t => {
+      const icon = t.pass ? '✅' : '❌';
+      const color = t.pass ? 'var(--success)' : 'var(--danger)';
+      html += `<div style="display:flex;gap:8px;padding:8px 10px;background:var(--surface-2);border-radius:8px;margin-bottom:5px;border-left:3px solid ${color};"><div style="font-size:14px;">${icon}</div><div style="flex:1;font-size:12px;">${t.name}</div></div>`;
+    });
+    if (allPassed) {
+      html += `<div style="background:rgba(16,185,129,.15);border:1px solid var(--success);border-radius:10px;padding:12px;margin-top:10px;text-align:center;"><div style="font-size:24px;">🎉</div><div style="color:var(--success);font-weight:800;font-size:13px;">Все тесты пройдены!</div></div>`;
+      const key = 'code_reward_' + c.id + '_' + l.id;
+      if (!codeStates[key]) { codeStates[key] = true;addCoins(25); addXP(30);confetti(50); soundReward();showToast('🎯', 'Код работает!', '+25 V, +30 XP');updateQuestProgress('q2');const a=state.achievements.find(x=>x.id==='a18');if(a)a.unlocked=true;renderAchievements();}
+    }
+  }
+  out.innerHTML = html;codeStates[lessonId] = { code };
+}
+
+/* ==================== LEARNING ==================== */
+function startLearning(courseId,lessonIndex=0){
+  state.currentCourseId=courseId;state.currentLessonIndex=lessonIndex;
+  if(!state.courseStreaks[courseId])state.courseStreaks[courseId]={count:1,lastDay:Date.now()};
+  else{const d=Math.floor(Date.now()/86400000);const l=Math.floor(state.courseStreaks[courseId].lastDay/86400000);
+    if(d!==l){if(d-l===1)state.courseStreaks[courseId].count++;else state.courseStreaks[courseId].count=1;state.courseStreaks[courseId].lastDay=Date.now();}}
+  renderCourseStreaks();renderLessonList();renderLesson();showPage('learning');
+}
+function renderLessonList(){
+  const c=getCourse(state.currentCourseId);if(!c)return;
+  const prog=state.courseProgress[c.id]||new Set();
+  $('lessonList').innerHTML=c.lessons.map((l,i)=>{
+    const cls=['lesson-list-item'];
+    if(prog.has(l.id))cls.push('done');
+    if(i===state.currentLessonIndex)cls.push('current');
+    return `<div class="${cls.join(' ')}" onclick="startLearning(${c.id},${i})"><span style="font-size:10px;opacity:.7;">${i+1}.</span><span style="flex:1;">${l.title}</span></div>`;
+  }).join('');
+  const done=prog.size,total=c.lessons.length,pct=Math.round((done/total)*100);
+  $('progressLabel').textContent=`${done} из ${total}`;$('progressPercent').textContent=pct+'%';$('progressFill').style.width=pct+'%';
+}
+function renderLesson(){
+  const c=getCourse(state.currentCourseId);if(!c)return;
+  const l=c.lessons[state.currentLessonIndex];if(!l)return;
+  const prog=state.courseProgress[c.id]||new Set();
+  const isDone=prog.has(l.id);const total=c.lessons.length;
+  let html='';
+  if(l.type==='theory'){html=`<div class="content">${l.content||'<p>Материал</p>'}</div>`;}
+  else if(l.type==='video'){html=`<div class="video-mock">🎬</div><div class="content"><p>${l.content||'Видео: '+l.title}</p></div>`;}
+  else if(l.type==='quiz'){
+    html=`<div class="content"><p>+15 V и +10 XP за верный!</p></div>`;
+    (l.questions||[]).forEach((q,qi)=>{html+=`<div class="quiz-block"><h4>${qi+1}. ${q.q}</h4>${q.options.map((o,oi)=>`<div class="quiz-option" onclick="checkQuizAnswer(this,${q.correct===oi})">${String.fromCharCode(65+oi)}) ${o}</div>`).join('')}</div>`;});
+  } else if(l.type==='code'){
+    html=`<div class="content">${l.content||'<p>Практика</p>'}</div>
+      <div class="code-runner">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+          <div style="font-size:11px;color:var(--text-muted);font-weight:800;letter-spacing:1px;text-transform:uppercase;">💻 JavaScript</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-outline btn-sm" onclick="resetCode(${l.id})">↺</button>
+            <button class="btn btn-primary btn-sm" onclick="runLessonCode(${l.id},false)">▶ Запустить</button>
+            <button class="btn btn-gold btn-sm" onclick="runLessonCode(${l.id},true)">✓ Проверить</button>
+          </div></div>
+        <textarea id="codeArea-${l.id}" class="code-area" spellcheck="false">${l.starter||''}</textarea>
+        <div id="codeOutput-${l.id}" class="code-output" style="display:none;"></div>
+      </div>`;
+  } else if(l.type==='circuit'){html=`<div class="content">${l.content||`<p>${l.description||'Circuit'}</p>`}</div><div style="margin-top:16px;"><a href="https://circuit.volt-voxel.ru/" target="_blank" class="btn btn-primary">🔌 Открыть Circuit</a></div>`;}
+  else if(l.type==='cad'){html=`<div class="content">${l.content||`<p>${l.description||'3D'}</p>`}</div><div style="margin-top:16px;"><a href="https://cad.volt-voxel.ru/" target="_blank" class="btn btn-primary">🧊 Открыть 3D</a></div>`;}
+  $('lessonContent').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+      <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:700;">Урок ${state.currentLessonIndex+1} из ${total}</div>
+      ${isDone?'<span class="type-tag" style="background:rgba(16,185,129,.2);color:#6ee7b7;">✓</span>':''}
+    </div>
+    <h2>${l.title}</h2>${html}
+    <div class="learn-footer">
+      <button class="btn btn-outline btn-sm" onclick="prevLesson()" ${state.currentLessonIndex===0?'disabled':''}>← Назад</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${!isDone?`<button class="btn btn-gold btn-sm" onclick="completeLesson(event)">✓ Завершить</button>`:''}
+        <button class="btn btn-primary btn-sm" onclick="nextLesson()" ${state.currentLessonIndex===total-1?'disabled':''}>Далее →</button>
+      </div>
+    </div>`;
+}
+function checkQuizAnswer(el,ok){
+  const p=el.parentElement;if(p.querySelector('.correct,.wrong'))return;
+  if(ok){el.classList.add('correct');el.innerHTML='✓ '+el.textContent;addCoins(15);addXP(10);updateQuestProgress('q2');}
+  else{el.classList.add('wrong');el.innerHTML='✗ '+el.textContent;soundError();}
+}
+function completeLesson(e){
+  const c=getCourse(state.currentCourseId);if(!c)return;
+  const l=c.lessons[state.currentLessonIndex];
+  if(!state.courseProgress[c.id])state.courseProgress[c.id]=new Set();
+  if(state.courseProgress[c.id].has(l.id))return;
+  state.courseProgress[c.id].add(l.id);addCoins(10);addXP(20);soundComplete();confetti(40,true);
+  showToast('🎉','Урок завершён!','+10 V, +20 XP');updateQuestProgress('q1');
+  const s=state.courseStreaks[c.id];if(s)s.lastDay=Date.now();
+  if(state.courseProgress[c.id].size===c.lessons.length)setTimeout(()=>completeCourse(c),800);
+  renderLessonList();renderLesson();renderCourseStreaks();
+}
+function completeCourse(c){
+  addCoins(200);addXP(300);confetti(120,true);soundComplete();
+  const a=state.achievements.find(x=>x.id==='a2');if(a)a.unlocked=true;renderAchievements();
+  showModal(`<div class="big-icon">🏆</div><h2>Курс завершён!</h2><p>«${c.title}»</p><div class="reward-show">+200 V, +300 XP</div><button class="btn btn-gold btn-full" onclick="closeModal()">🔥 Забрать</button>`);
+}
+function nextLesson(){const c=getCourse(state.currentCourseId);if(state.currentLessonIndex<c.lessons.length-1){state.currentLessonIndex++;renderLessonList();renderLesson();window.scrollTo(0,0);}}
+function prevLesson(){if(state.currentLessonIndex>0){state.currentLessonIndex--;renderLessonList();renderLesson();window.scrollTo(0,0);}}
+function askAI(){
+  const inp=$('aiInput'),msg=inp.value.trim();if(!msg)return;
+  const m=$('aiMessages');m.innerHTML+=`<div class="ai-msg user">${msg}</div>`;inp.value='';m.scrollTop=m.scrollHeight;
+  setTimeout(()=>{const r=['Хороший вопрос!','Нашёл материалы.','Разбей задачу.','Попробуй другой подход.','Проверь синтаксис.'][Math.floor(Math.random()*5)];m.innerHTML+=`<div class="ai-msg bot">${r}</div>`;m.scrollTop=m.scrollHeight;},700);
+}
+function renderMyCourses(){
+  const g=$('myCoursesGrid');
+  if(!state.myCourses.length){g.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted);"><div style="font-size:64px;">📚</div></div>`;return;}
+  g.innerHTML=state.myCourses.map(cid=>{
+    const c=getCourse(cid);if(!c)return '';
+    const prog=state.courseProgress[cid]||new Set();
+    const pct=Math.round((prog.size/c.lessons.length)*100);const s=state.courseStreaks[cid];
+    return `<div class="course-card" onclick="openCourseDetail(${c.id})"><div class="course-cover" style="background:${c.cover||'linear-gradient(135deg,#7c3aed,#06b6d4)'}">${c.icon||'📚'}${pct===100?'<div class="badge-done">✓</div>':''}${s?`<div class="badge-streak">🔥 ${s.count}</div>`:''}</div>
+      <div class="course-body"><h3>${c.title}</h3><p class="desc">${c.desc||''}</p><div class="course-progress-bar"><div style="width:${pct}%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);"><span>${pct}%</span><span>${prog.size}/${c.lessons.length}</span></div></div></div>`;
+  }).join('');
+}
+
+/* ==================== PVP ==================== */
+const pvpQuestions={
+  electronics:[{q:'Закон Ома?',o:['U=I×R','U=I+R','U=I/R'],c:0},{q:'Напряжение Uno?',o:['3.3V','5V','12V'],c:1},{q:'Сопротивление в?',o:['В','А','Ом'],c:2},{q:'Резистор?',o:['Усиливает','Ограничивает','Хранит'],c:1},{q:'Пинов Uno?',o:['8','14','20'],c:1}],
+  programming:[{q:'Вывод C++?',o:['print()','cout <<','echo'],c:1},{q:'Целые?',o:['int','float','string'],c:0},{q:'Постусловие?',o:['for','while','do-while'],c:2},{q:'Массив?',o:['Одна','Набор','Функция'],c:1},{q:'Комментарий?',o:['#','//','--'],c:1}],
+  '3d':[{q:'Формат печати?',o:['JPG','STL','MP4'],c:1},{q:'Примитив?',o:['Куб','Круг','Линия'],c:0},{q:'Булева?',o:['Union','Rotate','Scale'],c:0},{q:'Extrude?',o:['Вращает','Выдавливает','Сглаживает'],c:1},{q:'Оси?',o:['X,Y,Z','A,B,C','1,2,3'],c:0}],
+  data:[{q:'Pandas объект?',o:['DataFrame','Array','List'],c:0},{q:'LLM?',o:['Large Language Model','Local Logic','Linear Learning'],c:0},{q:'Визуализация?',o:['Matplotlib','Pandas','NumPy'],c:0},{q:'CSV?',o:['Видео','Таблицы','Язык'],c:1},{q:'NumPy для?',o:['Дизайна','Вычислений','3D'],c:1}]
+};
+let pvpState=null;
+function renderPvPLobby(){
+  $('pvpWins').textContent=state.pvpWins;$('pvpLosses').textContent=state.pvpLosses;$('pvpPeak').textContent=getDivision(state.pvpPeakLP).name;
+  renderDivision();$('pvpLobby').style.display='block';$('pvpFight').style.display='none';
+}
+function startDuel(cat){
+  const bn=['НейроБот','Алекс','Скибиди','Кодер3000','МастерИИ'],ba=['🤖','👾','🐺','🦊','🧙'];
+  const i=Math.floor(Math.random()*bn.length);
+  pvpState={cat,questions:[...pvpQuestions[cat]].sort(()=>Math.random()-.5),currentQ:0,myScore:0,botScore:0,timer:15,enemyName:bn[i],enemyAvatar:ba[i],interval:null};
+  $('pvpLobby').style.display='none';$('pvpFight').style.display='block';
+  $('pvpMyAvatar').textContent=$('topAvatar').textContent;$('pvpEnemyAvatar').textContent=pvpState.enemyAvatar;$('pvpEnemyName').textContent=pvpState.enemyName;
+  $('pvpProgress').innerHTML=pvpState.questions.map((_,i)=>`<div class="dot ${i===0?'active':''}"></div>`).join('');
+  soundVS();showToast('⚔️','Дуэль!',`Против: ${pvpState.enemyName}`);nextPvPQuestion();
+}
+function nextPvPQuestion(){
+  if(pvpState.currentQ>=pvpState.questions.length){endDuel();return;}
+  const q=pvpState.questions[pvpState.currentQ];
+  $('pvpQuestionBlock').innerHTML=`<h4>${pvpState.currentQ+1}. ${q.q}</h4>${q.o.map((o,i)=>`<div class="quiz-option" onclick="pvpAnswer(${i})">${String.fromCharCode(65+i)}) ${o}</div>`).join('')}`;
+  pvpState.timer=15;$('pvpTimer').textContent='⏱ 15';
+  document.querySelectorAll('#pvpProgress .dot').forEach((d,i)=>{d.className='dot'+(i===pvpState.currentQ?' active':'');});
+  clearInterval(pvpState.interval);
+  pvpState.interval=setInterval(()=>{pvpState.timer--;$('pvpTimer').textContent=`⏱ ${pvpState.timer}`;if(pvpState.timer<=0){clearInterval(pvpState.interval);pvpAnswer(-1);}},1000);
+}
+function pvpAnswer(ans){
+  clearInterval(pvpState.interval);
+  const q=pvpState.questions[pvpState.currentQ];
+  const meC=ans===q.c,botC=Math.random()<0.6;
+  if(meC)pvpState.myScore++;if(botC)pvpState.botScore++;
+  document.querySelectorAll('#pvpQuestionBlock .quiz-option').forEach((el,i)=>{if(i===q.c)el.classList.add('correct');else if(i===ans&&!meC)el.classList.add('wrong');});
+  setTimeout(()=>{pvpState.currentQ++;nextPvPQuestion();},900);
+}
+function endDuel(){
+  clearInterval(pvpState.interval);
+  const won=pvpState.myScore>pvpState.botScore,tie=pvpState.myScore===pvpState.botScore;
+  let lpChange=0;
+  if(won){state.pvpWins++;state.coins+=100;addXP(150);lpChange=20;confetti(100,true);soundReward();updateClanQuest('cq1',1);}
+  else if(tie){state.coins+=30;addXP(50);lpChange=5;}
+  else{state.pvpLosses++;addXP(30);lpChange=-15;soundError();}
+  addLP(lpChange);renderTop();renderLeaderboard();checkAchievements();updateQuestProgress('q4');
+  showModal(`<div class="big-icon">${won?'🏆':tie?'🤝':'😔'}</div><h2>${won?'Победа!':tie?'Ничья':'Поражение'}</h2><p>${pvpState.myScore} : ${pvpState.botScore}</p><div class="reward-show">${lpChange>0?'+':''}${lpChange} LP</div><button class="btn btn-gold btn-full" onclick="closeModal();renderPvPLobby();">Ок</button>`);
+}
+
+/* ==================== CLANS ==================== */
+const CLAN_DATA=[
+  {id:1,name:'Кибер-Волки',tag:'KBW',emblem:'🐺',members:14,coins:18420,desc:'Сильнейший'},
+  {id:2,name:'Драконьи Всадники',tag:'DRG',emblem:'🐉',members:18,coins:16240,desc:'Топ PvP'},
+  {id:3,name:'Орлы Знаний',tag:'ORL',emblem:'🦅',members:10,coins:14230,desc:'Новичкам рады'},
+  {id:4,name:'Львы Кода',tag:'LVC',emblem:'🦁',members:16,coins:12840,desc:'Программирование'},
+  {id:5,name:'Медведи',tag:'MBR',emblem:'🐻',members:12,coins:10560,desc:'Учимся вместе'}
+];
+let selectedEmblem='🐺';
+function selectEmblem(em,el){selectedEmblem=em;document.querySelectorAll('.emblem-option').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');}
+function createClan(){
+  const name=$('clanNameInput').value.trim(),tag=$('clanTagInput').value.trim().toUpperCase();
+  if(!name||!tag){soundError();showToast('❌','Заполни','');return;}
+  state.clan={id:Date.now(),name,tag,emblem:selectedEmblem,members:1,coins:state.coins,
+    membersList:[{name:'Вы',avatar:$('topAvatar').textContent,coins:state.coins,role:'Лидер',me:true}],
+    chat:[{author:'Система',text:`Клан «${name}» создан!`}]};
+  soundReward();confetti(80,true);showToast('🛡️','Клан создан!',name);
+  const a=state.achievements.find(x=>x.id==='a10');if(a)a.unlocked=true;renderAchievements();renderClans();
+}
+function joinClan(id){
+  const b=CLAN_DATA.find(c=>c.id===id);if(!b)return;
+  if(!confirm(`Вступить в «${b.name}»?`))return;
+  state.clan={...b,membersList:[
+    {name:'Мария К.',avatar:'🦸',coins:4890,role:'Лидер'},
+    {name:'Иван П.',avatar:'🧙',coins:4210,role:'Офицер'},
+    {name:'Вы',avatar:$('topAvatar').textContent,coins:state.coins,role:'Участник',me:true}
+  ],chat:[{author:'Мария К.',text:'Привет!'}]};
+  soundReward();confetti(60,true);showToast('🛡️','Вступил!',b.name);
+  const a=state.achievements.find(x=>x.id==='a10');if(a)a.unlocked=true;renderAchievements();renderClans();
+}
+function renderClans(){
+  if(state.clan){$('clanNotIn').style.display='none';$('clanIn').style.display='block';renderClanHeader();renderClanQuests();renderClanMembers();renderClanWar();renderClanChat();}
+  else{$('clanNotIn').style.display='block';$('clanIn').style.display='none';renderClanList();}
+}
+function renderClanList(){
+  const q=($('clanSearch')?.value||'').toLowerCase();
+  const f=CLAN_DATA.filter(c=>c.name.toLowerCase().includes(q)||c.tag.toLowerCase().includes(q));
+  $('clanGrid').innerHTML=f.map(c=>`<div class="clan-card" onclick="joinClan(${c.id})"><div style="display:flex;gap:12px;align-items:center;margin-bottom:10px;"><div class="clan-emblem">${c.emblem}</div><div><div style="font-weight:900;font-size:15px;">${c.name}</div><div style="font-size:11px;color:var(--gold);font-weight:800;">[${c.tag}]</div></div></div><div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">${c.desc}</div><div style="display:flex;justify-content:space-between;font-size:11px;"><span>👥 ${c.members}</span><span style="color:var(--gold);font-weight:800;">V ${formatNum(c.coins)}</span></div></div>`).join('');
+}
+function renderClanHeader(){
+  const c=state.clan;
+  $('clanHeader').innerHTML=`<div class="card" style="background:linear-gradient(135deg,#0c4a6e,#0369a1,#06b6d4);border-color:var(--accent);">
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+      <div class="clan-emblem" style="width:80px;height:80px;font-size:44px;">${c.emblem}</div>
+      <div style="flex:1;min-width:200px;"><div style="font-size:24px;font-weight:900;">${c.name}</div><div style="font-size:14px;color:var(--gold);font-weight:800;">[${c.tag}]</div><div style="font-size:12px;opacity:.9;margin-top:4px;">👥 ${c.members} • V ${formatNum(c.coins)}</div></div>
+      <button class="btn btn-danger btn-sm" onclick="leaveClan()">Покинуть</button>
+    </div></div>`;
+}
+function leaveClan(){if(confirm('Покинуть клан?')){state.clan=null;renderClans();}}
+function renderClanMembers(){
+  const c=state.clan;
+  $('clanMembersList').innerHTML=c.membersList.map(m=>`<div style="display:flex;gap:10px;align-items:center;padding:9px 11px;background:var(--surface-2);border-radius:10px;margin-bottom:6px;${m.me?'border:1px solid var(--gold);':''}"><div style="font-size:22px;">${m.avatar}</div><div style="flex:1;"><div style="font-weight:800;font-size:13px;">${m.name}</div><div style="font-size:10px;color:var(--text-muted);">${m.role}</div></div><div style="color:var(--gold);font-weight:800;font-size:11px;">V ${formatNum(m.coins)}</div></div>`).join('');
+}
+function renderClanWar(){
+  const c=state.clan;
+  const enemy=CLAN_DATA.find(x=>x.id!==c.id)||CLAN_DATA[0];
+  const my=Math.round(c.coins/100),en=Math.round(enemy.coins/100);
+  $('clanWar').innerHTML=`<div class="clan-war-banner"><div style="font-size:11px;letter-spacing:2px;font-weight:800;color:var(--gold);margin-bottom:10px;">⚔️ ВОЙНА</div>
+    <div class="clan-war-vs"><div><div style="font-size:40px;">${c.emblem}</div><div style="font-weight:800;font-size:12px;">${c.name}</div><div style="font-size:24px;font-weight:900;color:var(--gold);">${my}</div></div>
+    <div style="font-size:22px;font-weight:900;color:var(--danger);">VS</div>
+    <div><div style="font-size:40px;">${enemy.emblem}</div><div style="font-weight:800;font-size:12px;">${enemy.name}</div><div style="font-size:24px;font-weight:900;color:var(--danger);">${en}</div></div></div>
+    <button class="btn btn-danger btn-full btn-sm" style="margin-top:10px;" onclick="clanWarBoost()">🔥 Внести 100 V</button></div>`;
+}
+function clanWarBoost(){
+  if(state.coins<100){soundError();showToast('❌','Мало V','100');return;}
+  state.coins-=100;state.clan.coins+=1000;renderTop();renderClanWar();soundReward();confetti(30,true);showToast('⚔️','Вклад!','+10 очков');updateClanQuest('cq2',100);
+}
+function renderClanChat(){
+  const c=state.clan;if(!c.chat)c.chat=[];
+  $('clanChatMessages').innerHTML=c.chat.slice(-30).map(m=>`<div class="clan-msg ${m.author==='Вы'?'me':''}">${m.author!=='Вы'?`<span class="author">${m.author}</span>`:''}${m.text}</div>`).join('');
+  $('clanChatMessages').scrollTop=$('clanChatMessages').scrollHeight;
+}
+function sendClanMsg(){
+  const inp=$('clanChatInput'),t=inp.value.trim();if(!t)return;
+  state.clan.chat.push({author:'Вы',text:t});inp.value='';renderClanChat();
+  updateQuestProgress('q8');updateClanQuest('cq3',1);playTone(900,.08,'sine',.04);
+  if(Math.random()<0.5){setTimeout(()=>{const r=['Согласен!','Давай кодить!','🔥','PvP?'],a=['Мария К.','Иван П.','Ольга С.'];state.clan.chat.push({author:a[Math.floor(Math.random()*a.length)],text:r[Math.floor(Math.random()*r.length)]});renderClanChat();},1500);}
+}
+
+/* ==================== TOURNAMENTS ==================== */
+let tournInterval,streamState=null;
+function renderTournaments(){
+  updateTournCountdown();clearInterval(tournInterval);tournInterval=setInterval(updateTournCountdown,1000);
+  if(state.tournamentJoined){$('tournJoinBtn').disabled=true;$('tournJoinBtn').textContent='✅ Зарегистрирован';$('tournStatus').textContent='Ждём...';$('watchStreamBtn').style.display='inline-flex';}
+  $('tournPrize').textContent=formatNum((state.tournamentJoined?16:12)*150)+' V';renderTournBracket();
+}
+function updateTournCountdown(){
+  const now=new Date(),next=new Date(now);next.setMinutes(0,0,0);next.setHours(now.getHours()+1);
+  const diff=next-now;
+  const h=Math.floor(diff/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
+  if($('cdH')){$('cdH').textContent=String(h).padStart(2,'0');$('cdM').textContent=String(m).padStart(2,'0');$('cdS').textContent=String(s).padStart(2,'0');$('cdP').textContent=state.tournamentJoined?16:12;}
+}
+function joinTournament(){
+  if(state.coins<100){soundError();showToast('❌','Мало V','100');return;}
+  state.coins-=100;state.tournamentJoined=true;renderTop();renderTournaments();soundReward();confetti(40,true);showToast('🏟️','В турнире!','Ждём');setTimeout(()=>startTournament(),5000);
+}
+function startTournament(){
+  if(!state.tournamentJoined)return;
+  showToast('⚔️','Турнир начался!','Раунд 1');state.tournamentActive=true;state.tournamentRound=1;renderTournBracket();watchStream();
+  let r=1;
+  const iv=setInterval(()=>{if(r>=4){clearInterval(iv);finishTournament();return;}r++;state.tournamentRound=r;showToast('⚔️',`Раунд ${r}!`,'');playTone(600,.15,'sine',.05);renderTournBracket();if(streamState)addCommentary('ai','Раунд '+r+' начался!');},4500);
+}
+function renderTournBracket(){
+  const names=['Мария К.','Иван П.','Ольга С.','Дмитрий Р.','Анна В.','Сергей Т.','Ника Л.','Вы'];
+  const avatars=['🦸','🧙','🐉','🤖','👽','🐺','🐱','🧑‍🎓'];
+  if(!state.tournamentJoined){$('tournBracket').innerHTML='<p style="color:var(--text-muted);text-align:center;padding:20px;">Зарегистрируйся.</p>';$('tournRoundInfo').textContent='Не начат';return;}
+  const rounds=['Раунд 1/8','1/4','Полуфинал','ФИНАЛ'];const r=Math.min(state.tournamentRound,4);
+  $('tournRoundInfo').textContent=rounds[r-1]||'Завершён';
+  const num=Math.pow(2,4-r);let html='';
+  for(let i=0;i<num;i++){
+    const a=i*2%names.length,b=(i*2+1)%names.length;const isMe=a===7||b===7;
+    let cls='tourn-match';if(isMe)cls+=' active';
+    html+=`<div class="${cls}"><div class="tourn-player"><div class="av">${avatars[a]}</div><div class="nm">${names[a]}</div><div class="sc">${isMe?3:Math.floor(Math.random()*3)+1}</div></div><div style="color:var(--danger);font-weight:900;">VS</div><div class="tourn-player"><div class="av">${avatars[b]}</div><div class="nm">${names[b]}</div><div class="sc">${isMe?Math.floor(Math.random()*2):3}</div></div></div>`;
+  }
+  $('tournBracket').innerHTML=html;
+}
+function watchStream(){
+  $('streamBox').style.display='block';
+  streamState={viewers:1247+Math.floor(Math.random()*500),currentQ:0,myScore:0,enemyScore:0};
+  $('streamMyAv').textContent=$('topAvatar').textContent;$('streamEnemyAv').textContent='🤖';$('streamEnemyName').textContent='НейроБот';
+  $('streamMyScore').textContent='0';$('streamEnemyScore').textContent='0';$('streamCommentary').innerHTML='';
+  addCommentary('ai','Добро пожаловать на турнир!');setTimeout(()=>addCommentary('user','Погнали! 🔥'),1500);setTimeout(()=>startStreamQuestion(),2500);
+  streamState.viewerIv=setInterval(()=>{if(!streamState)return;streamState.viewers+=Math.floor(Math.random()*20)-8;$('streamViewers').textContent=`👁 ${formatNum(streamState.viewers)}`;},2000);
+}
+function closeStream(){if(streamState&&streamState.viewerIv)clearInterval(streamState.viewerIv);streamState=null;$('streamBox').style.display='none';}
+function addCommentary(type,name,text){
+  const c=$('streamCommentary');if(!c)return;
+  const el=document.createElement('div');el.className='commentary-line';
+  const iconMap={ai:'🎙',user:'💬',win:'🏆',lose:'😱'};const nameMap={ai:'AI',user:'Зритель',win:'AI',lose:'AI'};
+  el.innerHTML=`<div class="c-icon">${iconMap[type]||'🎙'}</div><div class="c-name">${name||nameMap[type]||'AI'}:</div><div class="c-text">${text}</div>`;
+  c.appendChild(el);c.scrollTop=c.scrollHeight;
+}
+function startStreamQuestion(){
+  if(!streamState)return;
+  const phrases=['Вопрос на подходе!','Начинаем раунд!','Внимание!','Оба готовы.','Посмотрим!'];
+  addCommentary('ai',phrases[Math.floor(Math.random()*phrases.length)]);
+  setTimeout(()=>{
+    if(!streamState)return;
+    const qs=['Закон Ома?','Напряжение Arduino?','Что такое LLM?','Язык в Arduino IDE?'];
+    const q=qs[Math.floor(Math.random()*qs.length)];
+    $('streamQuestionBox').style.display='block';$('streamQNum').textContent=`Раунд ${Math.min(4,streamState.currentQ+1)}`;$('streamQText').textContent=q;
+    const opts=[['U=I×R','U=I+R','P=V×I','R=U+I'],['5V','12V','3.3V','9V'],['Large Language Model','Local Logic','Linked','Linear'],['Python','C++','JS','Java']][Math.floor(Math.random()*4)];
+    $('streamOpts').innerHTML=opts.map((o,i)=>`<div class="stream-opt">${String.fromCharCode(65+i)}) ${o}</div>`).join('');
+  },1200);
+  setTimeout(()=>{
+    if(!streamState)return;
+    const correctIdx=Math.floor(Math.random()*4);
+    document.querySelectorAll('.stream-opt').forEach((el,i)=>{if(i===correctIdx)el.classList.add('revealed');});
+    const correct=Math.random()<0.7;
+    if(correct){streamState.myScore++;$('streamMyScore').textContent=streamState.myScore;addCommentary('win',null,'🎉 Правильно!');}
+    else{streamState.enemyScore++;$('streamEnemyScore').textContent=streamState.enemyScore;addCommentary('lose',null,'😱 Ошибка!');}
+    streamState.currentQ++;
+    if(streamState.currentQ<5)setTimeout(()=>startStreamQuestion(),1800);
+    else setTimeout(()=>{if(!streamState)return;const win=streamState.myScore>streamState.enemyScore;addCommentary('ai',win?'🏆 ПОБЕДА!':'😔 Поражение...');},1500);
+  },4500);
+}
+function finishTournament(){
+  state.tournamentActive=false;
+  const won=Math.random()<0.4,prize=won?2400:400;
+  state.coins+=prize;addXP(won?300:80);
+  if(won){const a=state.achievements.find(x=>x.id==='a11');if(a)a.unlocked=true;renderAchievements();confetti(150,true);soundReward();}
+  renderTop();renderLeaderboard();
+  showModal(`<div class="big-icon">${won?'🏆':'🥈'}</div><h2>${won?'Победа!':'Завершён'}</h2><div class="reward-show">+${formatNum(prize)} V</div><button class="btn btn-gold btn-full" onclick="closeModal();resetTournament();">Ок</button>`);
+}
+function resetTournament(){state.tournamentJoined=false;state.tournamentRound=0;$('watchStreamBtn').style.display='none';closeStream();renderTournaments();}
+
+/* ==================== CASES ==================== */
+const CASES=[
+  {id:'bronze',name:'Бронзовый',emoji:'🥉',price:100,cls:'bronze',drop:{common:70,rare:25,epic:4,legendary:1,mythic:0}},
+  {id:'silver',name:'Серебряный',emoji:'🥈',price:250,cls:'silver',drop:{common:40,rare:40,epic:15,legendary:4,mythic:1}},
+  {id:'gold',name:'Золотой',emoji:'🥇',price:500,cls:'gold',drop:{common:15,rare:35,epic:35,legendary:13,mythic:2}},
+  {id:'mythic',name:'Мифический',emoji:'💠',price:1500,cls:'mythic',drop:{common:0,rare:20,epic:40,legendary:30,mythic:10}}
+];
+function renderCases(){
+  $('casesGrid').innerHTML=CASES.map(c=>`<div class="case-card ${c.cls}" onclick="openCase('${c.id}')"><div class="case-emoji">${c.emoji}</div><div class="case-name">${c.name}</div><div class="case-price">V ${c.price}</div><div class="case-odds">${Object.entries(c.drop).filter(([k,v])=>v>0).map(([k,v])=>`<div style="color:var(--${k})">${k}: ${v}%</div>`).join('')}</div></div>`).join('');
+  if(state.caseHistory.length){$('caseHistory').innerHTML=state.caseHistory.slice(0,8).map(h=>`<div style="display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);"><div style="font-size:20px;">${h.icon}</div><div style="flex:1;">${h.name}</div><span class="rarity-tag ${h.rarity}">${h.rarity}</span></div>`).join('');}
+}
+function openCase(caseId){
+  const cs=CASES.find(c=>c.id===caseId);if(!cs)return;
+  if(state.coins<cs.price){soundError();showToast('❌','Мало V','');return;}
+  state.coins-=cs.price;state.casesOpened++;renderTop();
+  const roll=Math.random()*100;let cum=0,picked='common';
+  for(const [r,w] of Object.entries(cs.drop)){cum+=w;if(roll<=cum){picked=r;break;}}
+  const pool=allSkins.filter(s=>s.rarity===picked);const prize=pool.length?pool[Math.floor(Math.random()*pool.length)]:allSkins[0];
+  const reel=$('caseReel'),items=[];
+  for(let i=0;i<60;i++){if(i===45)items.push(prize);else{const r=Math.random()<.7?'common':Math.random()<.6?'rare':Math.random()<.7?'epic':'legendary';const p=allSkins.filter(s=>s.rarity===r);items.push(p[Math.floor(Math.random()*p.length)]||allSkins[0]);}}
+  reel.innerHTML=items.map(it=>`<div class="case-item r-${it.rarity}"><div class="icon">${it.icon}</div><div class="nm">${it.name}</div></div>`).join('');
+  reel.style.transform='translateX(0)';$('caseOpenTitle').textContent=cs.name+' кейс';$('caseResult').innerHTML='';$('caseCloseBtn').style.display='none';
+  $('caseOpenModal').classList.add('show');soundCaseOpen();
+  setTimeout(()=>{reel.style.transform=`translateX(${-45*150+300}px)`;},50);
+  setTimeout(()=>{
+    addSkinOrDuplicate(prize.id);state.caseHistory.unshift(prize);soundReward();
+    if(['legendary','mythic'].includes(prize.rarity))confetti(120,true);else confetti(50);
+    $('caseResult').innerHTML=`<div style="font-size:56px;">${prize.icon}</div><div style="font-size:20px;font-weight:900;margin-top:8px;">${prize.name}</div><div style="margin-top:6px;"><span class="rarity-tag ${prize.rarity}">${prize.rarity}</span></div>`;
+    $('caseCloseBtn').style.display='inline-flex';checkAchievements();renderCases();
+  },6300);
+}
+function closeCaseModal(){$('caseOpenModal').classList.remove('show');}
+
+/* ==================== CRAFTING ==================== */
+const SHARD_VALUES={common:1,rare:3,epic:8,legendary:20,mythic:50};
+const CRAFT_COSTS={common:5,rare:15,epic:40,legendary:100,mythic:250};
+function renderCrafting(){
+  $('shardBalance').innerHTML=Object.entries(state.shards).map(([k,v])=>`<div class="shard-card ${k}"><div class="shard-icon">${k==='common'?'⚪':k==='rare'?'🔵':k==='epic'?'🟣':k==='legendary'?'🟠':'🔴'}</div><div class="shard-name">${k}</div><div class="shard-count" style="color:var(--${k})">${v}</div></div>`).join('');
+  const dupEntries=Object.entries(state.duplicates).filter(([id,n])=>n>0);
+  $('dupsTotal').textContent=`Всего: ${dupEntries.reduce((a,[,n])=>a+n,0)}`;
+  if(!dupEntries.length){$('dupsContainer').innerHTML='<p style="color:var(--text-muted);text-align:center;padding:20px;">Нет дубликатов.</p>';}
+  else{$('dupsContainer').innerHTML=dupEntries.map(([id,count])=>{const item=allSkins.find(s=>s.id===id);if(!item)return '';const totalShards=SHARD_VALUES[item.rarity]*count;return `<div class="dup-item r-${item.rarity}"><div class="dup-emoji">${item.icon}</div><div class="dup-name">${item.name}</div><div class="dup-count">x${count}</div><button class="btn btn-danger btn-sm btn-full" onclick="dismantle('${id}')">♻️</button></div>`;}).join('');}
+  $('craftRecipes').innerHTML=Object.entries(CRAFT_COSTS).map(([r,cost])=>{const can=state.shards[r]>=cost;return `<div class="craft-recipe r-${r}"><div style="text-align:center;"><div style="font-size:26px;">🔷</div><div style="font-weight:800;font-size:14px;color:var(--${r})">${r}</div></div><div class="arrow">→</div><div style="text-align:center;"><div style="font-size:11px;color:var(--text-muted);">Нужно: ${cost}</div><div style="font-size:11px;color:var(--text-muted);">У вас: ${state.shards[r]}</div><button class="btn ${can?'btn-gold':'btn-outline'} btn-sm" style="margin-top:8px;" onclick="craftSkin('${r}')" ${can?'':'disabled'}>🔨</button></div></div>`;}).join('');
+}
+function dismantle(id){const count=state.duplicates[id]||0;if(!count)return;const item=allSkins.find(s=>s.id===id);if(!item)return;const shards=SHARD_VALUES[item.rarity]*count;state.shards[item.rarity]+=shards;state.duplicates[id]=0;soundCraft();confetti(30);showToast('♻️','+'+shards+' осколков');renderCrafting();}
+function dismantleAll(){let total=0;Object.entries(state.duplicates).forEach(([id,count])=>{if(count>0){const item=allSkins.find(s=>s.id===id);if(item){state.shards[item.rarity]+=SHARD_VALUES[item.rarity]*count;total+=SHARD_VALUES[item.rarity]*count;state.duplicates[id]=0;}}});if(total===0){soundError();showToast('❌','Нечего');return;}soundCraft();confetti(60,true);showToast('♻️','+'+total+' осколков');renderCrafting();}
+function craftSkin(rarity){const cost=CRAFT_COSTS[rarity];if(state.shards[rarity]<cost){soundError();showToast('❌','Мало');return;}state.shards[rarity]-=cost;const pool=allSkins.filter(s=>s.rarity===rarity);const prize=pool[Math.floor(Math.random()*pool.length)];addSkinOrDuplicate(prize.id);state.craftHistory.unshift(prize);soundCraft();confetti(60,true);showToast('🔨',prize.name);updateQuestProgress('q7');checkAchievements();renderCrafting();}
+
+/* ==================== BATTLE PASS ==================== */
+const bpTiers=[
+  {n:1,icon:'💰',name:'100 V',type:'coins',value:100,free:true},{n:2,icon:'⚡',name:'50 XP',type:'xp',value:50,free:true},
+  {n:3,icon:'👓',name:'Очки',type:'skin',value:'gl-1',free:true},{n:4,icon:'📦',name:'Silver',type:'case',value:'silver',free:true,premium:true},
+  {n:5,icon:'🎩',name:'Шляпа',type:'skin',value:'hat-2',free:false,premium:true},{n:6,icon:'⚡',name:'100 XP',type:'xp',value:100,free:true},
+  {n:8,icon:'💰',name:'250 V',type:'coins',value:250,free:true},{n:10,icon:'🏆',name:'Ачивка',type:'ach',value:'a8',free:true,premium:true},
+  {n:15,icon:'👑',name:'Корона',type:'skin',value:'hat-4',free:false,premium:true},{n:20,icon:'💠',name:'Mythic',type:'case',value:'mythic',free:true,premium:true}
+];
+function renderBattlePass(){
+  const xpL=250,curL=Math.floor(state.seasonXP/xpL)+1;state.seasonLevel=curL;
+  const totalXP=20*xpL;
+  $('bpProgressText').textContent=`${Math.min(state.seasonXP,totalXP)} / ${totalXP} XP`;
+  $('bpProgressFill').style.width=Math.min(100,(state.seasonXP/totalXP)*100)+'%';
+  const track=document.querySelector('.bp-track-toggle button.active')?.dataset.track||'free';
+  $('bpTiers').innerHTML=bpTiers.map(t=>{
+    const unlocked=curL>=t.n&&(track==='premium'?(state.premiumPass||t.free):true);
+    const isCur=t.n===curL;let cls='bp-tier';
+    if(unlocked)cls+=' unlocked';if(isCur)cls+=' current';if(!unlocked)cls+=' locked';
+    if(t.free)cls+=' free';if(t.premium)cls+=' premium';
+    return `<div class="${cls}" onclick="claimBPTier(${t.n})"><div class="bp-tier-num">Ур. ${t.n}</div><div class="bp-tier-icon">${t.icon}</div><div class="bp-tier-name">${t.name}</div></div>`;
+  }).join('');
+}
+document.querySelectorAll('.bp-track-toggle button').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.bp-track-toggle button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderBattlePass();});});
+function checkSeasonLevel(){const xpL=250,newL=Math.floor(state.seasonXP/xpL)+1;if(newL>state.seasonLevel){state.seasonLevel=newL;showToast('🎫','Battle Pass!',`Ур. ${newL}`);checkAchievements();}}
+function claimBPTier(n){
+  if(state.bpClaimed.includes(n)){showToast('✅','Уже');return;}
+  if(state.seasonLevel<n){soundError();showToast('🔒','Заблокировано');return;}
+  const tier=bpTiers.find(t=>t.n===n);
+  if(tier.premium&&!state.premiumPass&&!tier.free){showToast('👑','Premium');return;}
+  state.bpClaimed.push(n);
+  if(tier.type==='coins')addCoins(tier.value);else if(tier.type==='xp')addXP(tier.value);
+  else if(tier.type==='skin')addSkinOrDuplicate(tier.value);
+  else if(tier.type==='ach'){const a=state.achievements.find(x=>x.id===tier.value);if(a)a.unlocked=true;renderAchievements();}
+  else if(tier.type==='case')openCaseFromBP(tier.value);
+  soundReward();confetti(40,true);showToast('🎫','Получено!',tier.name);
+}
+function openCaseFromBP(caseId){
+  const cs=CASES.find(c=>c.id===caseId);if(!cs)return;
+  const roll=Math.random()*100;let cum=0,pick='common';
+  for(const [r,w] of Object.entries(cs.drop)){cum+=w;if(roll<=cum){pick=r;break;}}
+  const pool=allSkins.filter(s=>s.rarity===pick);const prize=pool[Math.floor(Math.random()*pool.length)]||allSkins[0];
+  addSkinOrDuplicate(prize.id);showToast('📦','Бесплатный кейс!',prize.name);
+}
+
+/* ==================== TRAJECTORY ==================== */
+const goals=[
+  {id:'dev',icon:'💻',name:'Программист',desc:'C++',courses:[1,5,3,2,6]},
+  {id:'electronics',icon:'⚡',name:'Электронщик',desc:'Схемы',courses:[1,4,2,5,6]},
+  {id:'data',icon:'📊',name:'Data Scientist',desc:'Python',courses:[3,6,5,1,4]},
+  {id:'maker',icon:'🧊',name:'3D-мейкер',desc:'Модели',courses:[2,1,6,5,4]}
+];
+function renderTrajectory(){
+  $('goalGrid').innerHTML=goals.map(g=>`<div class="goal-card ${state.selectedGoal===g.id?'selected':''}" onclick="selectGoal('${g.id}')"><div class="goal-icon">${g.icon}</div><div class="goal-name">${g.name}</div><div class="goal-desc">${g.desc}</div></div>`).join('');
+  if(state.selectedGoal)renderTrajSteps();
+}
+function selectGoal(id){state.selectedGoal=id;renderTrajectory();soundReward();confetti(30);showToast('🧭','Траектория!','');}
+function renderTrajSteps(){
+  const goal=goals.find(g=>g.id===state.selectedGoal);if(!goal)return;
+  $('trajGoalName').textContent=goal.name;$('trajProgressText').textContent=`${state.trajectoryProgress.length}/${goal.courses.length}`;
+  $('trajSteps').innerHTML=goal.courses.map((cid,i)=>{
+    const c=getCourse(cid);if(!c)return '';
+    const done=state.trajectoryProgress.includes(cid);const active=!done&&state.trajectoryProgress.length===i;
+    let cls='traj-step';if(done)cls+=' done';else if(active)cls+=' active';
+    return `<div class="${cls}" data-num="${i+1}" onclick="openCourseDetail(${cid})"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;"><div style="font-size:34px;">${c.icon}</div><div style="flex:1;min-width:160px;"><div style="font-weight:800;font-size:14px;">${c.title}</div></div><div style="text-align:right;">${done?'✓':active?'⚡':'🔒'}</div></div></div>`;
+  }).join('');
+  $('trajResult').style.display='block';
+}
+function completeTrajStep(cid){
+  if(!state.trajectoryProgress.includes(cid)){
+    state.trajectoryProgress.push(cid);addCoins(200);addXP(150);showToast('🧭','Этап!','+200 V');
+    const goal=goals.find(g=>g.id===state.selectedGoal);
+    if(state.trajectoryProgress.length===goal.courses.length){
+      const a=state.achievements.find(x=>x.id==='a9');if(a)a.unlocked=true;renderAchievements();
+      state.coins+=2500;confetti(150,true);
+      showModal(`<div class="big-icon">🧭</div><h2>Траектория!</h2><div class="reward-show">+2500 V</div><button class="btn btn-gold btn-full" onclick="closeModal()">🏆</button>`);
+      addSkinOrDuplicate('base-8');renderTop();
+    }
+    renderTrajectory();
+  }
+}
+
+/* ==================== CONSTRUCTOR ==================== */
+const COVER_COLORS=[
+  {name:'Purple',v:'linear-gradient(135deg,#7c3aed,#06b6d4)'},{name:'Orange',v:'linear-gradient(135deg,#f59e0b,#ef4444)'},
+  {name:'Green',v:'linear-gradient(135deg,#10b981,#059669)'},{name:'Blue',v:'linear-gradient(135deg,#3b82f6,#1e40af)'},
+  {name:'Pink',v:'linear-gradient(135deg,#ec4899,#8b5cf6)'},{name:'Red',v:'linear-gradient(135deg,#dc2626,#991b1b)'},
+  {name:'Cyan',v:'linear-gradient(135deg,#06b6d4,#0891b2)'},{name:'Gold',v:'linear-gradient(135deg,#fbbf24,#d97706)'},
+  {name:'Dark',v:'linear-gradient(135deg,#1e1b4b,#312e81)'}
+];
+let selectedCoverColor=COVER_COLORS[0].v;
+function renderConstructor(){
+  const list=$('myCustomCourses');$('customCoursesCount').textContent=state.customCourses.length;
+  if(!state.customCourses.length){list.innerHTML=`<div class="ctor-empty"><div class="big">📝</div><p>У тебя пока нет своих курсов.</p><button class="btn btn-gold" style="margin-top:14px;" onclick="createNewCourse()">➕ Создать первый курс</button></div>`;return;}
+  list.innerHTML=state.customCourses.map(c=>`<div class="ctor-course"><div class="cc-info"><div class="cc-title">${c.icon||'📚'} ${c.title||'Без названия'}</div><div class="cc-meta">${c.lessons.length} уроков • ${c.level||'—'}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-primary btn-sm" onclick="editCustomCourse(${c.id})">✏️ Редактировать</button><button class="btn btn-outline btn-sm" onclick="openCourseDetail(${c.id})">👁 Открыть</button><button class="btn btn-danger btn-sm" onclick="deleteCustomCourse(${c.id})">🗑</button></div></div>`).join('');
+}
+function createNewCourse(){
+  const id=Date.now();
+  const newCourse={id,title:'Новый курс',desc:'Описание курса',icon:'📚',cover:COVER_COLORS[0].v,category:'custom',level:'Начинающий',duration:'1 ч',rating:5.0,students:0,price:'Бесплатно',free:true,custom:true,lessons:[]};
+  state.customCourses.push(newCourse);saveCustomCourses();showToast('🛠️','Курс создан!','Добавь уроки');updateQuestProgress('q7');editCustomCourse(id);
+}
+function editCustomCourse(id){
+  const c=state.customCourses.find(x=>x.id===id);if(!c){showToast('❌','Курс не найден','');return;}
+  state.editingCourse=JSON.parse(JSON.stringify(c));
+  $('constructorList').style.display='none';$('constructorEditor').style.display='block';
+  $('ce-title').value=state.editingCourse.title||'';$('ce-desc').value=state.editingCourse.desc||'';
+  $('ce-icon').value=state.editingCourse.icon||'📚';$('ce-cat').value=state.editingCourse.category||'custom';
+  $('ce-level').value=state.editingCourse.level||'Начинающий';$('ce-duration').value=state.editingCourse.duration||'1 ч';
+  selectedCoverColor=state.editingCourse.cover||COVER_COLORS[0].v;renderCoverColors();renderCtorLessons();
+  document.querySelectorAll('.ctor-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.ctor-tab[data-ctor-tab="main"]').classList.add('active');
+  $('ctorTab-main').style.display='block';$('ctorTab-lessons').style.display='none';
+}
+function closeCourseEditor(){state.editingCourse=null;$('constructorList').style.display='block';$('constructorEditor').style.display='none';renderConstructor();renderCatalog();}
+function renderCoverColors(){$('ce-colors').innerHTML=COVER_COLORS.map(c=>`<div onclick="selectCoverColor('${c.v.replace(/'/g,"\\'")}')" style="width:48px;height:32px;border-radius:8px;background:${c.v};cursor:pointer;border:3px solid ${selectedCoverColor===c.v?'var(--gold)':'transparent'};" title="${c.name}"></div>`).join('');}
+function selectCoverColor(v){selectedCoverColor=v;renderCoverColors();}
+function renderCtorLessons(){
+  if(!state.editingCourse)return;
+  const list=$('ce-lessons-list');$('ce-lesson-count').textContent=state.editingCourse.lessons.length;
+  if(!state.editingCourse.lessons.length){list.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:20px;">Уроков нет. Добавь!</p>';return;}
+  list.innerHTML=state.editingCourse.lessons.map((l,i)=>`<div class="ctor-lesson"><div class="l-num">${i+1}.</div><div class="l-title">${l.title||'Без названия'} <span class="type-tag ${l.type}" style="margin-left:6px;">${l.type}</span></div><div class="l-actions"><button class="ctor-icon-btn" onclick="moveLesson(${i},-1)" ${i===0?'disabled':''}>↑</button><button class="ctor-icon-btn" onclick="moveLesson(${i},1)" ${i===state.editingCourse.lessons.length-1?'disabled':''}>↓</button><button class="ctor-icon-btn" onclick="editLessonInCourse(${i})">✏️</button><button class="ctor-icon-btn danger" onclick="deleteLessonFromCourse(${i})">🗑</button></div></div>`).join('');
+}
+function addLessonToEditing(){
+  if(!state.editingCourse)return;
+  state.editingCourse.lessons.push({id:Date.now(),title:'Новый урок',type:'theory',duration:'5 мин',content:'<p>Текст урока...</p>'});
+  renderCtorLessons();editLessonInCourse(state.editingCourse.lessons.length-1);
+}
+function deleteLessonFromCourse(i){if(!state.editingCourse)return;if(!confirm('Удалить урок?'))return;state.editingCourse.lessons.splice(i,1);renderCtorLessons();}
+function moveLesson(i,dir){if(!state.editingCourse)return;const arr=state.editingCourse.lessons;const j=i+dir;if(j<0||j>=arr.length)return;[arr[i],arr[j]]=[arr[j],arr[i]];renderCtorLessons();}
+function editLessonInCourse(i){
+  if(!state.editingCourse)return;
+  state.editingLessonIndex=i;const l=state.editingCourse.lessons[i];
+  const types=[['theory','📖 Теория'],['video','🎬 Видео'],['quiz','📝 Тест'],['code','💻 Код'],['circuit','🔌 Circuit'],['cad','🧊 3D']];
+  showModal(`<h2>${i+1}. Урок</h2><label>Название</label><input id="le-title" value="${(l.title||'').replace(/"/g,'&quot;')}"><label>Тип</label><select id="le-type" onchange="updateLessonEditorFields()">${types.map(t=>`<option value="${t[0]}" ${l.type===t[0]?'selected':''}>${t[1]}</option>`).join('')}</select><label>Длительность</label><input id="le-duration" value="${l.duration||'5 мин'}"><div id="le-fields"></div><div style="display:flex;gap:10px;margin-top:16px;"><button class="btn btn-outline btn-full" onclick="closeModal()">Отмена</button><button class="btn btn-gold btn-full" onclick="saveLessonEditor()">💾 Сохранить</button></div>`);
+  updateLessonEditorFields();
+}
+function updateLessonEditorFields(){
+  const type=$('le-type').value;const l=state.editingCourse.lessons[state.editingLessonIndex];
+  const container=$('le-fields');let html='';
+  if(type==='theory'||type==='video'){html=`<label>Содержание (HTML)</label><textarea id="le-content" style="min-height:150px;">${(l.content||'').replace(/</g,'&lt;')}</textarea>`;}
+  else if(type==='quiz'){html=`<label>Вопросы</label><div id="le-questions">${renderQuizQuestionsEditor(l.questions||[{q:'Вопрос?',options:['A','B','C'],correct:0}])}</div><button class="btn btn-outline btn-sm" onclick="addQuizQuestion()" style="margin-top:8px;">➕ Вопрос</button>`;}
+  else if(type==='code'){html=`<label>Описание</label><textarea id="le-content" style="min-height:80px;">${(l.content||'').replace(/</g,'&lt;')}</textarea><label>Стартовый код</label><textarea id="le-starter" style="min-height:120px;font-family:monospace;">${(l.starter||'').replace(/</g,'&lt;')}</textarea><label>Тесты</label><div id="le-tests">${renderTestsEditor(l.tests||[{name:'Тест 1',check:'true'}])}</div><button class="btn btn-outline btn-sm" onclick="addCodeTest()" style="margin-top:8px;">➕ Тест</button>`;}
+  else{html=`<label>Описание</label><textarea id="le-content" style="min-height:100px;">${(l.content||l.description||'').replace(/</g,'&lt;')}</textarea>`;}
+  container.innerHTML=html;
+}
+function renderQuizQuestionsEditor(qs){
+  return qs.map((q,qi)=>`<div style="background:var(--bg);border-radius:9px;padding:10px;margin-bottom:8px;border:1px solid var(--border);"><input class="le-q" data-qi="${qi}" value="${(q.q||'').replace(/"/g,'&quot;')}" style="width:100%;padding:8px;margin-bottom:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text);">${(q.options||[]).map((o,oi)=>`<div style="display:flex;gap:6px;margin-bottom:4px;align-items:center;"><input type="radio" name="qcorrect_${qi}" ${q.correct===oi?'checked':''} onchange="setCorrectAnswer(${qi},${oi})" style="width:auto;margin:0;"><input class="le-o" data-qi="${qi}" data-oi="${oi}" value="${(o||'').replace(/"/g,'&quot;')}" style="flex:1;padding:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;"></div>`).join('')}<button class="btn btn-outline btn-sm" onclick="addQuizOption(${qi})" style="margin-top:6px;font-size:10px;">+ вариант</button></div>`).join('');
+}
+function renderTestsEditor(ts){return ts.map((t,ti)=>`<div style="display:flex;gap:6px;margin-bottom:6px;"><input class="le-tn" data-ti="${ti}" value="${(t.name||'').replace(/"/g,'&quot;')}" placeholder="Название" style="flex:1;padding:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;"><input class="le-tc" data-ti="${ti}" value="${(t.check||'').replace(/"/g,'&quot;')}" placeholder="JS" style="flex:2;padding:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;font-family:monospace;"><button class="ctor-icon-btn danger" onclick="removeCodeTest(${ti})">🗑</button></div>`).join('');}
+function addQuizQuestion(){const l=state.editingCourse.lessons[state.editingLessonIndex];if(!l.questions)l.questions=[];l.questions.push({q:'Новый вопрос?',options:['A','B','C'],correct:0});updateLessonEditorFields();}
+function addQuizOption(qi){const l=state.editingCourse.lessons[state.editingLessonIndex];l.questions[qi].options.push('Новый вариант');updateLessonEditorFields();}
+function setCorrectAnswer(qi,oi){const l=state.editingCourse.lessons[state.editingLessonIndex];l.questions[qi].correct=oi;}
+function addCodeTest(){const l=state.editingCourse.lessons[state.editingLessonIndex];if(!l.tests)l.tests=[];l.tests.push({name:'Новый тест',check:'true'});updateLessonEditorFields();}
+function removeCodeTest(ti){const l=state.editingCourse.lessons[state.editingLessonIndex];l.tests.splice(ti,1);updateLessonEditorFields();}
+function saveLessonEditor(){
+  if(state.editingLessonIndex<0)return;
+  const l=state.editingCourse.lessons[state.editingLessonIndex];
+  l.title=$('le-title').value.trim()||'Без названия';l.type=$('le-type').value;l.duration=$('le-duration').value.trim()||'5 мин';
+  if(l.type==='theory'||l.type==='video'){const ta=$('le-content');if(ta)l.content=ta.value;}
+  else if(l.type==='quiz'){
+    const qs=[];
+    document.querySelectorAll('.le-q').forEach((el,qi)=>{const q={q:el.value,options:[],correct:0};document.querySelectorAll(`.le-o[data-qi="${qi}"]`).forEach(o=>{q.options.push(o.value);});document.querySelectorAll(`input[name="qcorrect_${qi}"]`).forEach((r,oi)=>{if(r.checked)q.correct=oi;});qs.push(q);});
+    l.questions=qs;
+  } else if(l.type==='code'){
+    const cta=$('le-content'),sta=$('le-starter');
+    if(cta)l.content=cta.value;if(sta)l.starter=sta.value;
+    const tests=[];document.querySelectorAll('.le-tn').forEach((el,ti)=>{const name=el.value;const checkEl=document.querySelector(`.le-tc[data-ti="${ti}"]`);tests.push({name,check:checkEl?checkEl.value:'true'});});
+    l.tests=tests;
+  } else if(l.type==='circuit'||l.type==='cad'){const ta=$('le-content');if(ta){l.content=ta.value;l.description=ta.value;}}
+  closeModal();renderCtorLessons();showToast('💾','Урок сохранён','');
+}
+function saveCourseEditor(){
+  if(!state.editingCourse)return;
+  state.editingCourse.title=$('ce-title').value.trim()||'Без названия';
+  state.editingCourse.desc=$('ce-desc').value.trim();
+  state.editingCourse.icon=$('ce-icon').value.trim()||'📚';
+  state.editingCourse.category=$('ce-cat').value;
+  state.editingCourse.level=$('ce-level').value;
+  state.editingCourse.duration=$('ce-duration').value.trim()||'1 ч';
+  state.editingCourse.cover=selectedCoverColor;
+  const idx=state.customCourses.findIndex(x=>x.id===state.editingCourse.id);
+  if(idx>=0)state.customCourses[idx]=state.editingCourse;else state.customCourses.push(state.editingCourse);
+  saveCustomCourses();showToast('💾','Курс сохранён!','');confetti(50);
+}
+function previewCourse(){saveCourseEditor();openCourseDetail(state.editingCourse.id);}
+function deleteCustomCourse(id){
+  if(!confirm('Удалить курс?'))return;
+  const i=state.customCourses.findIndex(x=>x.id===id);if(i>=0)state.customCourses.splice(i,1);
+  saveCustomCourses();showToast('🗑','Курс удалён','');
+  if(state.editingCourse&&state.editingCourse.id===id)closeCourseEditor();
+  renderConstructor();renderCatalog();
+}
+function exportCustomCourses(){
+  if(!state.customCourses.length){showToast('❌','Нет курсов','');return;}
+  const data=JSON.stringify(state.customCourses,null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='voxel-courses-'+Date.now()+'.json';
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+  showToast('📤','Экспортировано!',`${state.customCourses.length} курсов`);
+}
+function importCustomCourses(){
+  const input=document.createElement('input');input.type='file';input.accept='.json';
+  input.onchange=e=>{
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      try{
+        const arr=JSON.parse(reader.result);
+        if(!Array.isArray(arr))throw new Error('Не массив');
+        let added=0;
+        arr.forEach(c=>{if(c&&c.id&&c.title&&Array.isArray(c.lessons)){c.custom=true;if(state.customCourses.some(x=>x.id===c.id))c.id=Date.now()+Math.floor(Math.random()*1000);state.customCourses.push(c);added++;}});
+        saveCustomCourses();renderConstructor();renderCatalog();showToast('📥','Импортировано!',`${added} курсов`);
+      }catch(err){showToast('❌','Ошибка','Невалидный JSON');}
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+/* ==================== LOBBY ==================== */
+const SKIN_COLORS = {
+  'base-1': {skin:'#f5c08a', torso:'#3b82f6', legs:'#1e3a8a'},
+  'base-2': {skin:'#f5c08a', torso:'#1a1830', legs:'#4b5563'},
+  'base-3': {skin:'#f5c08a', torso:'#dc2626', legs:'#7f1d1d'},
+  'base-4': {skin:'#f5c08a', torso:'#8b5cf6', legs:'#5b21b6'},
+  'base-5': {skin:'#94a3b8', torso:'#475569', legs:'#334155'},
+  'base-6': {skin:'#86efac', torso:'#22c55e', legs:'#166534'},
+  'base-7': {skin:'#a3a3a3', torso:'#78716c', legs:'#44403c'},
+  'base-8': {skin:'#65a30d', torso:'#16a34a', legs:'#ca8a04'}
+};
+function applyCharacterSkin(){
+  const eq = state.equipped;
+  const c = SKIN_COLORS[eq.base] || SKIN_COLORS['base-1'];
+  const head=$('char-head'), torso=$('char-torso');
+  if(!head) return;
+  head.style.background = c.skin;
+  torso.style.background = c.torso;
+  // Все 4 части рук
+  document.querySelectorAll('.char-arm').forEach(el=>el.style.setProperty('--limb-bg', c.torso));
+  document.querySelectorAll('.char-arm-upper, .char-arm-lower').forEach(el=>el.style.background = c.torso);
+  // Все 4 части ног
+  document.querySelectorAll('.char-leg').forEach(el=>el.style.setProperty('--limb-bg', c.legs));
+  document.querySelectorAll('.char-leg-upper, .char-leg-lower').forEach(el=>el.style.background = c.legs);
+
+  const hat = eq.hat ? allSkins.find(s=>s.id===eq.hat) : null;
+  $('char-hat').textContent = hat ? hat.icon : '';
+  const gl = eq.glasses ? allSkins.find(s=>s.id===eq.glasses) : null;
+  $('char-glasses').textContent = gl ? gl.icon : '';
+  const pet = eq.pet ? allSkins.find(s=>s.id===eq.pet) : null;
+  $('char-pet').textContent = pet ? pet.icon : '';
+  const aura = eq.aura ? allSkins.find(s=>s.id===eq.aura) : null;
+  $('char-aura').textContent = aura ? aura.icon : '';
+  const bg = (eq.bg && bgGradients[eq.bg]) ? bgGradients[eq.bg] : bgGradients['bg-1'];
+  const scene = $('lobbyScene');
+  if(scene) scene.style.background = bg;
+  const names = ['Новичок','Ученик','Продвинутый','Эксперт','Мастер','Легенда'];
+  const tierName = names[Math.min(names.length-1, Math.floor(state.inventory.length/3))];
+  const nameEl = $('char-name');
+  if(nameEl) nameEl.textContent = tierName + ' • ' + state.level + ' LVL';
+}
+function updateLobbyStats(){
+  const lvl = $('lobbyLevel'), coins = $('lobbyCoins'), streak = $('lobbyStreak');
+  if(lvl) lvl.textContent = state.level;
+  if(coins) coins.textContent = formatNum(state.coins);
+  if(streak) streak.textContent = '🔥 ' + state.streak;
+  const xt = $('lobbyXpText'), xf = $('lobbyXpFill');
+  if(xt) xt.textContent = `${state.xp} / ${state.xpPerLevel}`;
+  if(xf) xf.style.width = Math.min(100, (state.xp/state.xpPerLevel)*100) + '%';
+}
+function initLobby(){
+  const root = $('char-root');
+  if(!root) return;
+  root.addEventListener('click', () => {
+    if(root.classList.contains('waving')) return;
+    root.classList.add('waving');
+    playTone(880, .1, 'sine', .06);
+    setTimeout(()=>playTone(1320, .12, 'sine', .06), 100);
+    showToast('👋','Привет!','Персонаж машет тебе');
+    setTimeout(()=>root.classList.remove('waving'), 2200);
+  });
+  setInterval(()=>{
+    document.querySelectorAll('.char-eye').forEach(e=>e.style.height='3px');
+    setTimeout(()=>document.querySelectorAll('.char-eye').forEach(e=>e.style.height='20px'), 140);
+  }, 3800);
+  let t = 0;
+  function idleLoop(){
+    t += 0.02;
+    const wrap = $('char-body-wrap');
+    if(wrap && !root.className.match(/emote-/)){
+      const sway = Math.sin(t) * 0.8;
+      wrap.style.transform = `rotateX(${1 + Math.sin(t)*0.8}deg) rotateZ(${sway}deg) scale(1.005)`;
+    }
+    requestAnimationFrame(idleLoop);
+  }
+  idleLoop();
+  function scheduleHop(){
+    setTimeout(()=>{
+      if(root && !root.classList.contains('waving') && !root.className.match(/emote-/)){
+        root.classList.add('hopping');
+        setTimeout(()=>root.classList.remove('hopping'), 700);
+      }
+      scheduleHop();
+    }, 12000 + Math.random()*8000);
+  }
+  scheduleHop();
+}
+
+/* ==================== EMOTE WHEEL ==================== */
+const EMOTES=[
+  {id:'wave',icon:'👋',name:'Привет',key:'1'},
+  {id:'dance',icon:'💃',name:'Танец',key:'2'},
+  {id:'laugh',icon:'😂',name:'Смех',key:'3'},
+  {id:'flex',icon:'💪',name:'Красота',key:'4'},
+  {id:'celebrate',icon:'🎉',name:'Победа',key:'5'},
+  {id:'sixseven',icon:'6️⃣7️⃣',name:'Six Seven',key:'6'},
+  {id:'heart',icon:'❤️',name:'Сердце',key:'7'},
+  {id:'cool',icon:'😎',name:'Круто',key:'8'}
+];
+let currentEmoteTimeout = null;
+let emoteWheelRendered = false;
+
+function renderEmoteWheel(){
+  const wheel = $('emoteWheelInner');
+  if(!wheel || emoteWheelRendered) return;
+  emoteWheelRendered = true;
+  const radius = window.innerWidth < 900 ? 110 : 150;
+  const angleStep = 360 / EMOTES.length;
+  EMOTES.forEach((em,i)=>{
+    const angle = (i * angleStep - 90) * Math.PI / 180;
+    const x = Math.cos(angle) * radius;
+    const y = Math.sin(angle) * radius;
+    const el = document.createElement('div');
+    el.className = 'emote-item' + (em.id === 'sixseven' ? ' sixseven' : '');
+    el.style.transform = `translate(${x}px, ${y}px)`;
+    el.dataset.baseTransform = `translate(${x}px, ${y}px)`;
+    el.innerHTML = `<div class="em-icon">${em.icon}</div><div class="em-name">${em.name}</div><div class="em-key">${em.key}</div>`;
+    el.addEventListener('click', (e)=>{e.stopPropagation();playEmote(em.id);});
+    el.addEventListener('mouseenter', ()=>{el.style.transform = el.dataset.baseTransform + ' scale(1.15)';});
+    el.addEventListener('mouseleave', ()=>{el.style.transform = el.dataset.baseTransform;});
+    wheel.appendChild(el);
+  });
+  window.addEventListener('resize', ()=>{
+    const w = $('emoteWheelInner');
+    if(!w) return;
+    const items = w.querySelectorAll('.emote-item');
+    const r = window.innerWidth < 900 ? 110 : 150;
+    items.forEach((el,i)=>{
+      const angle = (i * angleStep - 90) * Math.PI / 180;
+      const x = Math.cos(angle) * r;
+      const y = Math.sin(angle) * r;
+      el.style.transform = `translate(${x}px, ${y}px)`;
+      el.dataset.baseTransform = `translate(${x}px, ${y}px)`;
+    });
+  });
+}
+function openEmoteWheel(){
+  const overlay = $('emoteWheel');
+  if(!overlay) return;
+  overlay.classList.add('show');
+  playTone(660, .1, 'sine', .06);
+  setTimeout(()=>playTone(990, .12, 'sine', .06), 80);
+}
+function closeEmoteWheel(){
+  const overlay = $('emoteWheel');
+  if(!overlay) return;
+  overlay.classList.remove('show');
+}
+function handleEmoteKey(e){
+  if(e.target && ['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
+  const modalOpen = $('modalBg') && $('modalBg').classList.contains('show');
+  if(modalOpen) return;
+  const wheelOpen = $('emoteWheel').classList.contains('show');
+  const isB = (e.key && (e.key.toLowerCase() === 'b')) || e.code === 'KeyB' || (e.keyCode === 66);
+  if(isB){
+    e.preventDefault();
+    if(wheelOpen) closeEmoteWheel();
+    else openEmoteWheel();
+    return;
+  }
+  if((e.key === 'Escape' || e.code === 'Escape' || e.keyCode === 27) && wheelOpen){
+    e.preventDefault();
+    closeEmoteWheel();
+    return;
+  }
+  if(wheelOpen){
+    const num = parseInt(e.key);
+    if(num >= 1 && num <= EMOTES.length){
+      e.preventDefault();
+      playEmote(EMOTES[num-1].id);
+    }
+  }
+}
+function playEmote(id){
+  closeEmoteWheel();
+  const root = $('char-root');
+  if(!root) return;
+
+  root.style.animation = '';
+  root.classList.remove('hopping');
+
+  const allEmotes = ['wave','dance','laugh','flex','celebrate','sixseven','heart','cool'];
+  allEmotes.forEach(e => root.classList.remove('emote-' + e));
+  if(currentEmoteTimeout) clearTimeout(currentEmoteTimeout);
+  void root.offsetHeight;
+
+  root.classList.add('emote-' + id);
+
+  const eff = $('emote-effect');
+  if(eff){
+    eff.classList.remove('show');
+    eff.textContent = '';
+    void eff.offsetHeight;
+    let text = '';
+    if(id === 'sixseven') text = '6️⃣ 7️⃣';
+    else if(id === 'heart') text = '❤️';
+    else if(id === 'cool') text = '😎';
+    else if(id === 'celebrate') text = '🎉';
+    else if(id === 'laugh') text = '😂';
+    else if(id === 'flex') text = '💪';
+    else if(id === 'dance') text = '🎵';
+    else if(id === 'wave') text = '👋';
+    eff.textContent = text;
+    if(text) eff.classList.add('show');
+  }
+
+  if(id === 'sixseven'){
+    playTone(660,.15,'sine',.07);
+    setTimeout(()=>playTone(880,.15,'sine',.07),160);
+    setTimeout(()=>playTone(660,.15,'sine',.07),320);
+    setTimeout(()=>playTone(990,.2,'sine',.07),500);
+  } else if(id === 'dance'){
+    [523,659,784,659].forEach((f,i)=>setTimeout(()=>playTone(f,.15,'sine',.07), i*120));
+  } else if(id === 'laugh'){
+    [880,1100,990,1100].forEach((f,i)=>setTimeout(()=>playTone(f,.08,'sine',.06), i*80));
+  } else {
+    playTone(880, .15, 'sine', .07);
+  }
+
+  const em = EMOTES.find(x=>x.id===id);
+  if(em){
+    if(id === 'sixseven') showToast('6️⃣7️⃣','SIX SEVEN','🤙 6... 7...');
+    else showToast(em.icon, em.name, '');
+  }
+
+  currentEmoteTimeout = setTimeout(()=>{
+    root.classList.remove('emote-' + id);
+  }, 2600);
+}
+
+/* ==================== PAGE ROUTING ==================== */
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el=$('page-'+page);if(el)el.classList.add('active');
+  document.querySelectorAll('.nav-main button').forEach(b=>b.classList.remove('active'));
+  const nb=document.querySelector(`.nav-main button[data-page="${page}"]`);
+  if(nb)nb.classList.add('active');
+  window.scrollTo(0,0);
+  if(page==='catalog')renderCatalog();
+  if(page==='my-learning')renderMyCourses();
+  if(page==='battlepass')renderBattlePass();
+  if(page==='trajectory')renderTrajectory();
+  if(page==='pvp')renderPvPLobby();
+  if(page==='clans')renderClans();
+  if(page==='tournaments')renderTournaments();
+  if(page==='cases')renderCases();
+  if(page==='crafting')renderCrafting();
+  if(page==='constructor')renderConstructor();
+  if(page==='activities'){applyCharacterSkin();updateLobbyStats();}
+}
+document.querySelectorAll('.nav-main button').forEach(btn=>{btn.addEventListener('click',()=>showPage(btn.dataset.page));});
+document.querySelectorAll('.ctor-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.ctor-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const tab=t.dataset.ctorTab;
+    $('ctorTab-main').style.display=tab==='main'?'block':'none';
+    $('ctorTab-lessons').style.display=tab==='lessons'?'block':'none';
+  });
+});
+// Закрытие колеса кликом по фону
+document.addEventListener('click', (e)=>{
+  const overlay = $('emoteWheel');
+  if(overlay && overlay.classList.contains('show') && e.target === overlay){
+    closeEmoteWheel();
+  }
+});
+// Keyboard listener
+window.addEventListener('keydown', handleEmoteKey, false);
+
+/* ==================== INIT ==================== */
+function init(){
+  loadCustomCourses();
+  generateAIQuests();
+  renderTop();renderSlotTabs();renderItems();renderStreak();
+  renderQuests();renderAchievements();renderLeaderboard();renderShop();renderWheel();
+  renderCatalog();renderMyCourses();renderCourseStreaks();renderPvPLobby();
+  renderTrajectory();renderClans();renderTournaments();renderCases();renderCrafting();renderBattlePass();
+  renderConstructor();
+  renderAvatar();
+  initLobby();
+  renderEmoteWheel();
+  document.addEventListener('click',()=>{
+    if(!audioCtx)initAudio();
+    if(!state.musicPlaying && !sessionStorage.getItem('musicOff')){startMusic();}
+  },{once:true});
+  setTimeout(()=>showToast('🎁','Сундук дня!','30 V'),4000);
+  setTimeout(()=>showToast('💃','Нажми B','Колесо эмоций!'),7000);
+  checkAchievements();
+}
+init();
+</script>
+</body>
+</html>
